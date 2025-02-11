@@ -1,0 +1,19 @@
+﻿@model IEnumerable<QueenOfApostlesRenewalCentre.Models.News>
+@{
+    ViewData["Title"] = "News Posts";
+}
+<h1>News Posts</h1>
+<a href="@Url.Action("Create")" class="btn btn-primary mb-3">Create New News Post</a>
+
+@foreach (var item in Model)
+{
+    <div class="card mb-3">
+        <div class="card-body">
+            <h3 class="card-title">@item.Title</h3>
+            <p class="text-muted">Published on @item.PublishedDate.ToString("g")</p>
+            <p class="card-text">@item.Content</p>
+            <a href="@Url.Action("Edit", new { id = item.NewsId })" class="btn btn-warning">Edit</a>
+            <a href="@Url.Action("Delete", new { id = item.NewsId })" class="btn btn-danger">Delete</a>
+        </div>
+    </div>
+}

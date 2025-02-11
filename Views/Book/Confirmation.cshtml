@@ -1,0 +1,23 @@
+﻿@model QueenOfApostlesRenewalCentre.Models.Booking
+
+@{
+    ViewData["Title"] = "Booking Confirmation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Booking Confirmation</h2>
+
+<div class="card">
+    <div class="card-header">
+        Booking Details
+    </div>
+    <div class="card-body">
+        <p><strong>Guest Name:</strong> @Model.GuestName</p>
+        <p><strong>Room:</strong> @Model.Room?.Name</p>
+        <p><strong>Arrival:</strong> @Model.StartDate.ToShortDateString()</p>
+        <p><strong>Departure:</strong> @Model.EndDate.ToShortDateString()</p>
+        <p><strong>Status:</strong> @Model.Status</p>
+    </div>
+</div>
+
+<a asp-action="Index" class="btn btn-primary mt-3">Back to Home</a>

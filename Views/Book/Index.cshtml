@@ -1,0 +1,105 @@
+﻿@model QueenOfApostlesRenewalCentre.Models.BookViewModel
+
+@{
+    ViewData["Title"] = "Book a Room";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Book a Room</h2>
+
+<form asp-action="Index" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="Arrival" class="form-label">Arrival</label>
+        <input asp-for="Arrival" type="date" class="form-control" />
+        <span asp-validation-for="Arrival" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Departure" class="form-label">Departure</label>
+        <input asp-for="Departure" type="date" class="form-control" />
+        <span asp-validation-for="Departure" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Rooms" class="form-label">Rooms</label>
+        <input asp-for="Rooms" type="number" class="form-control" min="1" />
+        <span asp-validation-for="Rooms" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Guests" class="form-label">Guests</label>
+        <input asp-for="Guests" type="number" class="form-control" min="1" />
+        <span asp-validation-for="Guests" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="GuestName" class="form-label">Guest Name</label>
+        <input asp-for="GuestName" class="form-control" />
+        <span asp-validation-for="GuestName" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="RoomId" class="form-label">Select Room</label>
+        <select asp-for="RoomId" class="form-select" asp-items="Model.AvailableRooms">
+            <option value="">-- Select a Room --</option>
+        </select>
+        <span asp-validation-for="RoomId" class="text-danger"></span>
+    </div>
+    <!-- Overnight Option Dropdown -->
+    <div class="mb-3">
+        <label asp-for="OvernightOption" class="form-label">Overnight Option</label>
+        <select asp-for="OvernightOption" class="form-select" id="overnightOption">
+            <option value="">-- Select Overnight Option --</option>
+            <option value="No">No Overnight</option>
+            <option value="With">With Overnight</option>
+        </select>
+        <span asp-validation-for="OvernightOption" class="text-danger"></span>
+    </div>
+    <!-- Reservation Type Dropdown -->
+    <div class="mb-3">
+        <label asp-for="ReservationType" class="form-label">Reservation Type</label>
+        <select asp-for="ReservationType" class="form-select" id="reservationType">
+            <option value="">-- Select Reservation Type --</option>
+            <!-- Options will be populated by JavaScript -->
+        </select>
+        <span asp-validation-for="ReservationType" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Book Now</button>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Define reservation options for each overnight option.
+        var reservationOptions = {
+            "No": [
+                { value: "Individual Day Retreat", text: "Individual Day Retreat" },
+                { value: "Group Retreat (One-Day)", text: "Group Retreat (One-Day)" }
+            ],
+            "With": [
+                { value: "Individual Overnight Retreat", text: "Individual Overnight Retreat" },
+                { value: "Group Retreat (Overnight)", text: "Group Retreat (Overnight)" },
+                { value: "Married Couples Retreat", text: "Married Couples Retreat" },
+                { value: "Engaged Encounter", text: "Engaged Encounter" },
+                { value: "Nuns' 7-Day Retreat", text: "Nuns' 7-Day Retreat" }
+            ]
+        };
+
+        // When the Overnight Option dropdown changes, update the Reservation Type dropdown
+        document.getElementById("overnightOption").addEventListener("change", function () {
+            var selectedOption = this.value;
+            var reservationTypeDropdown = document.getElementById("reservationType");
+
+            // Clear current options
+            reservationTypeDropdown.innerHTML = '<option value="">-- Select Reservation Type --</option>';
+
+            if (reservationOptions[selectedOption]) {
+                reservationOptions[selectedOption].forEach(function (opt) {
+                    var option = document.createElement("option");
+                    option.value = opt.value;
+                    option.text = opt.text;
+                    reservationTypeDropdown.appendChild(option);
+                });
+            }
+        });
+    </script>
+}

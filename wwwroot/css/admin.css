@@ -1,0 +1,63 @@
+﻿/* admin.css */
+
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+
+#sidebar-wrapper {
+    background-color: #343a40;
+    min-height: 100vh;
+    padding-top: 20px;
+}
+
+    #sidebar-wrapper .sidebar-heading {
+        font-size: 1.5rem;
+        padding: 20px;
+        color: #fff;
+        text-align: center;
+        border-bottom: 1px solid #495057;
+    }
+
+    #sidebar-wrapper .list-group-item {
+        background-color: #343a40;
+        border: none;
+        color: #fff;
+        padding: 15px 20px;
+        transition: background-color 0.3s ease;
+    }
+
+        #sidebar-wrapper .list-group-item:hover {
+            background-color: #495057;
+            color: #fff;
+            cursor: pointer;
+        }
+
+
+#page-content-wrapper {
+    padding: 20px;
+}
+
+
+.navbar-light.bg-light {
+    background-color: #e9ecef !important;
+    border-bottom: 1px solid #dee2e6;
+}
+
+
+#sidebarToggle {
+    margin-right: 10px;
+}
+
+
+footer {
+    background-color: #343a40;
+    color: #fff;
+    padding: 15px 0;
+    text-align: center;
+    font-size: 0.9rem;
+}

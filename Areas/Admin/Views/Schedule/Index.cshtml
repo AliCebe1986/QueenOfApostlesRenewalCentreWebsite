@@ -1,0 +1,205 @@
+﻿@{
+    ViewData["Title"] = "Weekly Schedule";
+}
+<h2>Weekly Schedule</h2>
+
+<div class="table-responsive">
+    <table class="table table-bordered" id="weeklyScheduleTable">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Group Name</th>
+                <th>Participants</th>
+                <th>Meal Type</th>
+                <th>Chapel Booking</th>
+                <th>Meeting Room</th>
+                <th>Coffee Break</th>
+                <th>Notes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        </tbody>
+    </table>
+</div>
+
+<button class="btn btn-primary" id="addScheduleBtn">Add New Schedule Entry</button>
+
+<!-- Modal for adding/editing schedule entry -->
+<div class="modal fade" id="scheduleModal" tabindex="-1" aria-labelledby="scheduleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="scheduleForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="scheduleModalLabel">Schedule Entry</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="entryId" />
+                    <div class="mb-3">
+                        <label for="entryDate" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="entryDate" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="groupName" class="form-label">Group Name</label>
+                        <input type="text" class="form-control" id="groupName" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="participants" class="form-label">Participants</label>
+                        <input type="number" class="form-control" id="participants" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="mealType" class="form-label">Meal Type</label>
+                        <input type="text" class="form-control" id="mealType" placeholder="Breakfast, Lunch, Dinner, etc." required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="chapelBooking" class="form-label">Chapel Booking</label>
+                        <input type="text" class="form-control" id="chapelBooking" placeholder="Details or Yes/No" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="meetingRoom" class="form-label">Meeting Room</label>
+                        <input type="text" class="form-control" id="meetingRoom" placeholder="Room Name" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="coffeeBreak" class="form-label">Coffee Break</label>
+                        <input type="text" class="form-control" id="coffeeBreak" placeholder="Time or details" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes</label>
+                        <textarea class="form-control" id="notes"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="saveEntryBtn">Save Entry</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJ+YoC2F0nYj6yYg2Cz7zb50T7Z/smMW8lR7Y=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            
+            function loadWeeklySchedule() {
+                $.ajax({
+                    url: '/api/schedule/week',
+                    type: 'GET',
+                    success: function (data) {
+                        var tbody = $('#weeklyScheduleTable tbody');
+                        tbody.empty();
+                        $.each(data, function (i, entry) {
+                            var row = `<tr>
+                                        <td>${new Date(entry.date).toLocaleDateString()}</td>
+                                        <td>${entry.groupName}</td>
+                                        <td>${entry.numberOfParticipants}</td>
+                                        <td>${entry.mealType}</td>
+                                        <td>${entry.chapelBooking}</td>
+                                        <td>${entry.meetingRoom}</td>
+                                        <td>${entry.coffeeBreakTime}</td>
+                                        <td>${entry.notes}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning editEntryBtn" data-id="${entry.id}">Edit</button>
+                                            <button class="btn btn-sm btn-danger deleteEntryBtn" data-id="${entry.id}">Delete</button>
+                                        </td>
+                                    </tr>`;
+                            tbody.append(row);
+                        });
+                    }
+                });
+            }
+
+            loadWeeklySchedule();
+
+            
+            $('#addScheduleBtn').click(function () {
+                $('#scheduleForm')[0].reset();
+                $('#entryId').val('');
+                $('#scheduleModal').modal('show');
+            });
+
+            
+            $('#scheduleForm').submit(function (e) {
+                e.preventDefault();
+                var entryId = $('#entryId').val();
+                var entryData = {
+                    id: entryId ? parseInt(entryId) : 0,
+                    date: $('#entryDate').val(),
+                    groupName: $('#groupName').val(),
+                    numberOfParticipants: parseInt($('#participants').val()),
+                    mealType: $('#mealType').val(),
+                    chapelBooking: $('#chapelBooking').val(),
+                    meetingRoom: $('#meetingRoom').val(),
+                    coffeeBreakTime: $('#coffeeBreak').val(),
+                    notes: $('#notes').val()
+                };
+
+                if (entryId) {
+                    
+                    $.ajax({
+                        url: '/api/schedule/' + entryId,
+                        type: 'PUT',
+                        contentType: 'application/json',
+                        data: JSON.stringify(entryData),
+                        success: function () {
+                            $('#scheduleModal').modal('hide');
+                            loadWeeklySchedule();
+                        }
+                    });
+                } else {
+                    
+                    $.ajax({
+                        url: '/api/schedule',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(entryData),
+                        success: function () {
+                            $('#scheduleModal').modal('hide');
+                            loadWeeklySchedule();
+                        }
+                    });
+                }
+            });
+
+            
+            $(document).on('click', '.editEntryBtn', function () {
+                var entryId = $(this).data('id');
+                $.ajax({
+                    url: '/api/schedule/' + entryId,
+                    type: 'GET',
+                    success: function (entry) {
+                        $('#entryId').val(entry.id);
+                        $('#entryDate').val(new Date(entry.date).toISOString().split('T')[0]);
+                        $('#groupName').val(entry.groupName);
+                        $('#participants').val(entry.numberOfParticipants);
+                        $('#mealType').val(entry.mealType);
+                        $('#chapelBooking').val(entry.chapelBooking);
+                        $('#meetingRoom').val(entry.meetingRoom);
+                        $('#coffeeBreak').val(entry.coffeeBreakTime);
+                        $('#notes').val(entry.notes);
+                        $('#scheduleModal').modal('show');
+                    }
+                });
+            });
+
+            
+            $(document).on('click', '.deleteEntryBtn', function () {
+                if (confirm('Are you sure you want to delete this entry?')) {
+                    var entryId = $(this).data('id');
+                    $.ajax({
+                        url: '/api/schedule/' + entryId,
+                        type: 'DELETE',
+                        success: function () {
+                            loadWeeklySchedule();
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

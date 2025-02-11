@@ -1,0 +1,90 @@
+﻿@model IEnumerable<QueenOfApostlesRenewalCentre.Models.Room>
+
+@{
+    ViewData["Title"] = "Manage Rooms";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Manage Rooms</h2>
+        <a href="@Url.Action("Create", "Rooms", new { area = "Admin" })" class="btn btn-primary">Add New Room</a>
+    </div>
+
+    <div class="row">
+        @foreach (var room in Model)
+        {
+            // Set card border color: red if reserved, green if available
+            var cardColor = room.IsReserved ? "border-danger" : "border-success";
+            var headerColor = room.IsReserved ? "bg-danger" : "bg-success";
+            <div class="col-md-3 mb-4">
+                <div class="card @cardColor room-card" data-room-id="@room.RoomId" style="cursor: pointer;">
+                    <div class="card-header text-white @headerColor">
+                        @room.Name
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            Capacity: @room.Capacity <br />
+                            Type: @room.Type <br />
+                            Shower: @(room.WithShower ? "With Shower" : "Without Shower")
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Room Details Modal -->
+<div class="modal fade" id="roomDetailsModal" tabindex="-1" aria-labelledby="roomDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="roomDetailsModalLabel">Room Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Room details will be loaded here -->
+                <div id="roomDetailsContent">
+                    Loading...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a id="editRoomLink" href="#" class="btn btn-warning">Edit</a>
+                <a id="deleteRoomLink" href="#" class="btn btn-danger">Delete</a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Attach click event to each room card
+        document.querySelectorAll('.room-card').forEach(function (card) {
+            card.addEventListener('click', function () {
+                var roomId = this.getAttribute('data-room-id');
+
+                // For demonstration, populate modal with data from the card.
+                // In production, an AJAX call could be used to fetch detailed info.
+                var roomName = this.querySelector('.card-header').innerText;
+                var cardText = this.querySelector('.card-text').innerText;
+                var status = this.classList.contains("border-danger") ? "Reserved" : "Available";
+                var content = `
+                            <p><strong>Name:</strong> ${roomName}</p>
+                            <p>${cardText.replace(/\n/g, "<br />")}</p>
+                            <p><strong>Status:</strong> ${status}</p>
+                        `;
+                document.getElementById('roomDetailsContent').innerHTML = content;
+
+                // Set edit and delete links
+                document.getElementById('editRoomLink').setAttribute('href', `/Admin/Rooms/Edit/${roomId}`);
+                document.getElementById('deleteRoomLink').setAttribute('href', `/Admin/Rooms/Delete/${roomId}`);
+
+                // Show the modal
+                var roomModal = new bootstrap.Modal(document.getElementById('roomDetailsModal'));
+                roomModal.show();
+            });
+        });
+    </script>
+}

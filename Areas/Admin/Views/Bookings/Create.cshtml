@@ -1,0 +1,61 @@
+﻿@model QueenOfApostlesRenewalCentre.Models.Booking
+
+@{
+    ViewData["Title"] = "Add New Booking";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    // Safeguard: If ViewBag.Rooms is null, create an empty SelectList.
+    var roomList = ViewBag.Rooms as SelectList ?? new SelectList(new List<QueenOfApostlesRenewalCentre.Models.Room>(), "RoomId", "Name");
+}
+
+<h2>Add New Booking</h2>
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="GuestName" class="form-label">Guest Name</label>
+        <input asp-for="GuestName" class="form-control" />
+        <span asp-validation-for="GuestName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="RoomId" class="form-label">Select Room</label>
+        <select asp-for="RoomId" class="form-select" asp-items="roomList">
+            <option value="">-- Select a Room --</option>
+        </select>
+        <span asp-validation-for="RoomId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="StartDate" class="form-label">Arrival</label>
+        <input asp-for="StartDate" type="date" class="form-control" />
+        <span asp-validation-for="StartDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="EndDate" class="form-label">Departure</label>
+        <input asp-for="EndDate" type="date" class="form-control" />
+        <span asp-validation-for="EndDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Status" class="form-label">Status</label>
+        <input asp-for="Status" class="form-control" placeholder="e.g., Confirmed, Pending, Cancelled" />
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ReservationType" class="form-label">Reservation Type</label>
+        <input asp-for="ReservationType" class="form-control" placeholder="e.g., Individual Day Retreat, Group Retreat, etc." />
+        <span asp-validation-for="ReservationType" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Booking</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

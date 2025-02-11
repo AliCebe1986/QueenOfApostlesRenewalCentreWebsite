@@ -1,0 +1,55 @@
+﻿@model QueenOfApostlesRenewalCentre.Models.RoomCleaning
+@{
+    ViewData["Title"] = "Add Cleaning Entry";
+}
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="RoomNumber" class="form-label"></label>
+        <input asp-for="RoomNumber" class="form-control" />
+        <span asp-validation-for="RoomNumber" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="GroupName" class="form-label"></label>
+        <input asp-for="GroupName" class="form-control" />
+        <span asp-validation-for="GroupName" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="DepartureDate" class="form-label"></label>
+        <input asp-for="DepartureDate" type="date" class="form-control" />
+        <span asp-validation-for="DepartureDate" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="CleaningStatus" class="form-label"></label>
+        <select asp-for="CleaningStatus" class="form-select">
+            <option value="Pending">Pending</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+        </select>
+        <span asp-validation-for="CleaningStatus" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="CleanerName" class="form-label"></label>
+        <input asp-for="CleanerName" class="form-control" />
+        <span asp-validation-for="CleanerName" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="CleaningDate" class="form-label"></label>
+        <input asp-for="CleaningDate" type="datetime-local" class="form-control" />
+        <span asp-validation-for="CleaningDate" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="AdditionalNotes" class="form-label"></label>
+        <textarea asp-for="AdditionalNotes" class="form-control"></textarea>
+        <span asp-validation-for="AdditionalNotes" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

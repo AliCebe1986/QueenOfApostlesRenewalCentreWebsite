@@ -1,0 +1,62 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h2 class="mb-4">Admin Dashboard</h2>
+
+    <div class="row">
+        <!-- Conference Room Management Card -->
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    Conference Rooms
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Manage room setups, bookings, and view calendars.</p>
+                    <a href="/Admin/Conference" class="btn btn-outline-primary btn-sm">Manage</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registration Management Card -->
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    Registrations
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Handle registration forms, updates, and backups.</p>
+                    <a href="/Admin/Registration" class="btn btn-outline-success btn-sm">Manage</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Forms & Facilities Card -->
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-white">
+                    Forms & Facilities
+                </div>
+                <div class="card-body">
+                    <p class="card-text">View and manage facility lists and forms.</p>
+                    <a href="/Admin/Forms" class="btn btn-outline-warning btn-sm">View</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Management Card -->
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    Finances
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Oversee invoices, payments, and revenue reports.</p>
+                    <a href="/Admin/Financial" class="btn btn-outline-danger btn-sm">Manage</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

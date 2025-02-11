@@ -1,0 +1,51 @@
+﻿@model IEnumerable<QueenOfApostlesRenewalCentre.Models.ApplicationUser>
+@inject Microsoft.AspNetCore.Identity.UserManager<QueenOfApostlesRenewalCentre.Models.ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Manage Users";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Manage Users</h2>
+
+<form method="get" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="searchString" class="form-control" placeholder="Search users..." value="@ViewContext.HttpContext.Request.Query["searchString"]" />
+        <button type="submit" class="btn btn-outline-secondary">Search</button>
+    </div>
+</form>
+
+<a asp-action="Create" class="btn btn-primary mb-3">Add New User</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Roles</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@user.Name</td>
+                <td>@user.Surname</td>
+                <td>
+                    @{
+                        var roles = await UserManager.GetRolesAsync(user);
+                    }
+                    @string.Join(", ", roles)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@user.Id" class="btn btn-info btn-sm">Details</a>
+                    <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@user.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

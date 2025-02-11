@@ -1,0 +1,64 @@
+﻿@model QueenOfApostlesRenewalCentre.Models.Room
+
+@{
+    ViewData["Title"] = "Edit Room";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit Room</h2>
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="RoomId" />
+
+    <div class="mb-3">
+        <label asp-for="RoomNumber" class="form-label">Room Number</label>
+        <input asp-for="RoomNumber" class="form-control" />
+        <span asp-validation-for="RoomNumber" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">Room Name</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Capacity" class="form-label">Room Capacity</label>
+        <input asp-for="Capacity" type="number" class="form-control" />
+        <span asp-validation-for="Capacity" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Type" class="form-label">Room Type</label>
+        <input asp-for="Type" class="form-control" />
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="WithShower" class="form-label">Shower Option</label>
+        <select asp-for="WithShower" class="form-select">
+            <option value="true">With Shower</option>
+            <option value="false">Without Shower</option>
+        </select>
+        <span asp-validation-for="WithShower" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="IsReserved" class="form-label">Reserved Today?</label>
+        <select asp-for="IsReserved" class="form-select">
+            <option value="false">Available</option>
+            <option value="true">Reserved</option>
+        </select>
+        <span asp-validation-for="IsReserved" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

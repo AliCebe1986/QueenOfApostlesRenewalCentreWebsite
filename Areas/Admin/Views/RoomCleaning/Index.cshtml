@@ -1,0 +1,59 @@
+﻿
+@model IEnumerable<QueenOfApostlesRenewalCentre.Models.RoomCleaning>
+@{
+    ViewData["Title"] = "Room Cleaning Schedule";
+}
+<h2>@ViewData["Title"]</h2>
+
+<form method="get" asp-action="Index" class="mb-3">
+    <div class="row">
+        <div class="col-md-4">
+            <!-- HttpContext yerine ViewContext.HttpContext kullanıldı -->
+            <input type="text" name="searchString" class="form-control" placeholder="Search by Room or Cleaner" value="@ViewContext.HttpContext.Request.Query["searchString"]" />
+        </div>
+        <div class="col-md-3">
+            <!-- HttpContext yerine ViewContext.HttpContext kullanıldı -->
+            <input type="date" name="filterDate" class="form-control" value="@ViewContext.HttpContext.Request.Query["filterDate"]" />
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+        <div class="col-md-3 text-end">
+            <a asp-action="Create" class="btn btn-success">Add New Cleaning Entry</a>
+        </div>
+    </div>
+</form>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Room Number</th>
+            <th>Group Name</th>
+            <th>Departure Date</th>
+            <th>Cleaning Status</th>
+            <th>Cleaner Name</th>
+            <th>Cleaning Date</th>
+            <th>Additional Notes</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.RoomNumber</td>
+                <td>@item.GroupName</td>
+                <td>@item.DepartureDate.ToShortDateString()</td>
+                <td>@item.CleaningStatus</td>
+                <td>@item.CleanerName</td>
+                <td>@(item.CleaningDate.HasValue ? item.CleaningDate.Value.ToString("g") : "")</td>
+                <td>@item.AdditionalNotes</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

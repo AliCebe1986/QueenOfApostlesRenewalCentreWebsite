@@ -1,0 +1,69 @@
+﻿@model QueenOfApostlesRenewalCentre.Models.Room
+
+@{
+    ViewData["Title"] = "Add New Room";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Add New Room</h2>
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <!-- Room Number Field -->
+    <div class="mb-3">
+        <h6>Room Number</h6>
+        <input asp-for="RoomNumber" class="form-control" />
+        <span asp-validation-for="RoomNumber" class="text-danger"></span>
+    </div>
+
+    <!-- Room Name Field -->
+    <div class="mb-3">
+        <h6>Room Name</h6>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <!-- Room Capacity Field -->
+    <div class="mb-3">
+        <h6>Room Capacity</h6>
+        <input asp-for="Capacity" type="number" class="form-control" />
+        <span asp-validation-for="Capacity" class="text-danger"></span>
+    </div>
+
+    <!-- Room Type Field -->
+    <div class="mb-3">
+        <h6>Room Type</h6>
+        <input asp-for="Type" class="form-control" />
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+
+    <!-- Shower Option Field -->
+    <div class="mb-3">
+        <label asp-for="WithShower" class="form-label">Shower Option</label>
+        <select asp-for="WithShower" class="form-select">
+            <option value="true">With Shower</option>
+            <option value="false">Without Shower</option>
+        </select>
+        <span asp-validation-for="WithShower" class="text-danger"></span>
+    </div>
+
+    <!-- Reserved Today Field -->
+    <div class="mb-3">
+        <label asp-for="IsReserved" class="form-label">Reserved Today?</label>
+        <select asp-for="IsReserved" class="form-select">
+            <option value="false">Available</option>
+            <option value="true">Reserved</option>
+        </select>
+        <span asp-validation-for="IsReserved" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Room</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

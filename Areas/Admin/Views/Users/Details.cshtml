@@ -1,0 +1,55 @@
+﻿@model QueenOfApostlesRenewalCentre.Models.ApplicationUser
+@inject Microsoft.AspNetCore.Identity.UserManager<QueenOfApostlesRenewalCentre.Models.ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "User Details";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>User Details</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Name @Model.Surname</h5>
+        <p class="card-text"><strong>Email:</strong> @Model.Email</p>
+        <p class="card-text">
+            <strong>Roles:</strong>
+            @{
+                var roles = await UserManager.GetRolesAsync(Model);
+                @string.Join(", ", roles)
+            }
+        </p>
+    </div>
+</div>
+
+<h3>User Bookings</h3>
+@if (ViewBag.Bookings != null && ((List<QueenOfApostlesRenewalCentre.Models.Booking>)ViewBag.Bookings).Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Room</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var booking in (List<QueenOfApostlesRenewalCentre.Models.Booking>)ViewBag.Bookings)
+            {
+                <tr>
+                    <td>@booking.Room?.Name</td>
+                    <td>@booking.StartDate.ToShortDateString()</td>
+                    <td>@booking.EndDate.ToShortDateString()</td>
+                    <td>@booking.Status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No bookings found for this user.</p>
+}
+
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>

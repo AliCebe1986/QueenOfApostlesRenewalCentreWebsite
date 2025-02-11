@@ -1,0 +1,62 @@
+﻿@model QueenOfApostlesRenewalCentre.Models.Booking
+@{
+    ViewData["Title"] = "New Reservation";
+}
+
+<h2>New Reservation</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="GuestName" class="form-label"></label>
+        <input asp-for="GuestName" class="form-control" />
+        <span asp-validation-for="GuestName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Room</label>
+        <select asp-for="RoomId" class="form-select">
+            <option value="">Select Room</option>
+            @foreach (var room in (List<QueenOfApostlesRenewalCentre.Models.Room>)ViewData["Rooms"])
+            {
+                <option value="@room.RoomId">@room.Name (Capacity: @room.Capacity)</option>
+            }
+        </select>
+        <span asp-validation-for="RoomId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="StartDate" class="form-label"></label>
+        <input asp-for="StartDate" type="datetime-local" class="form-control" />
+        <span asp-validation-for="StartDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="EndDate" class="form-label"></label>
+        <input asp-for="EndDate" type="datetime-local" class="form-control" />
+        <span asp-validation-for="EndDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ReservationType" class="form-label">Reservation Type</label>
+        <select asp-for="ReservationType" class="form-select">
+            <option value="Individual Day Retreat">Individual Day Retreat</option>
+            <option value="Group Retreat (One-Day)">Group Retreat (One-Day)</option>
+            <option value="Individual Overnight Retreat">Individual Overnight Retreat</option>
+            <option value="Group Retreat (Overnight)">Group Retreat (Overnight)</option>
+            <option value="Married Couples Retreat">Married Couples Retreat</option>
+            <option value="Engaged Encounter">Engaged Encounter</option>
+            <option value="Nuns' 7-Day Retreat">Nuns' 7-Day Retreat</option>
+        </select>
+        <span asp-validation-for="ReservationType" class="text-danger"></span>
+    </div>
+
+    <!-- İsteğe bağlı: Yemek seçimi, depozito bilgileri, iptal politikası gibi ek alanlar eklenebilir -->
+
+    <button type="submit" class="btn btn-primary">Submit Reservation</button>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

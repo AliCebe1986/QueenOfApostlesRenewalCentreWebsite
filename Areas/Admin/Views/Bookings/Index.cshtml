@@ -1,0 +1,42 @@
+﻿@model IEnumerable<QueenOfApostlesRenewalCentre.Models.Booking>
+
+@{
+    ViewData["Title"] = "Manage Bookings";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Manage Bookings</h2>
+
+<a asp-action="Create" class="btn btn-primary mb-3">Add New Booking</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Guest Name</th>
+            <th>Room</th>
+            <th>Arrival</th>
+            <th>Departure</th>
+            <th>Status</th>
+            <th>Reservation Type</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var booking in Model)
+        {
+            <tr>
+                <td>@booking.GuestName</td>
+                <td>@booking.Room?.Name</td>
+                <td>@booking.StartDate.ToShortDateString()</td>
+                <td>@booking.EndDate.ToShortDateString()</td>
+                <td>@booking.Status</td>
+                <td>@booking.ReservationType</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@booking.BookingId" class="btn btn-info btn-sm">Details</a>
+                    <a asp-action="Edit" asp-route-id="@booking.BookingId" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@booking.BookingId" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
