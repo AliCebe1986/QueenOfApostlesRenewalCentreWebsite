@@ -1,0 +1,36 @@
+﻿@model IEnumerable<QueenOfApostlesRenewalCentre.Models.RoomCleaning>
+
+@{
+    ViewData["Title"] = "Reports";
+    Layout = "~/Areas/Staff/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h2>Reports</h2>
+    <p><strong>Total Tasks:</strong> @ViewBag.TotalTasks</p>
+    <p><strong>Completed Tasks:</strong> @ViewBag.CompletedTasks</p>
+    <p><strong>Pending Tasks:</strong> @ViewBag.PendingTasks</p>
+
+    <h3>Cleaning Tasks Overview</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Room Number</th>
+                <th>Departure Date</th>
+                <th>Status</th>
+                <th>Cleaning Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in Model)
+            {
+                <tr>
+                    <td>@task.RoomNumber</td>
+                    <td>@task.DepartureDate.ToShortDateString()</td>
+                    <td>@task.CleaningStatus</td>
+                    <td>@(task.CleaningDate.HasValue ? task.CleaningDate.Value.ToString("g") : "N/A")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

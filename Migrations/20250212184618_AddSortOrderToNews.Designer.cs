@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QueenOfApostlesRenewalCentre.Data;
 
@@ -11,9 +12,11 @@ using QueenOfApostlesRenewalCentre.Data;
 namespace QueenOfApostlesRenewalCentre.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250212184618_AddSortOrderToNews")]
+    partial class AddSortOrderToNews
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -468,43 +471,6 @@ namespace QueenOfApostlesRenewalCentre.Migrations
                     b.ToTable("Staffs");
                 });
 
-            modelBuilder.Entity("QueenOfApostlesRenewalCentre.Models.StaffTask", b =>
-                {
-                    b.Property<int>("TaskId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskId"));
-
-                    b.Property<DateTime>("AssignedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DueDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("StaffId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("TaskId");
-
-                    b.HasIndex("StaffId");
-
-                    b.ToTable("StaffTasks");
-                });
-
             modelBuilder.Entity("QueenOfApostlesRenewalCentre.Models.WeeklySchedule", b =>
                 {
                     b.Property<int>("Id")
@@ -630,17 +596,6 @@ namespace QueenOfApostlesRenewalCentre.Migrations
                         .IsRequired();
 
                     b.Navigation("Invoice");
-                });
-
-            modelBuilder.Entity("QueenOfApostlesRenewalCentre.Models.StaffTask", b =>
-                {
-                    b.HasOne("QueenOfApostlesRenewalCentre.Models.ApplicationUser", "Staff")
-                        .WithMany()
-                        .HasForeignKey("StaffId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Staff");
                 });
 #pragma warning restore 612, 618
         }

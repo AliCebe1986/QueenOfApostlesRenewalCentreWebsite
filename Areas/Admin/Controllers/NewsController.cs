@@ -4,12 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using QueenOfApostlesRenewalCentre.Data;
 using QueenOfApostlesRenewalCentre.Models;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace QueenOfApostlesRenewalCentre.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")] // Sadece admin rolüne sahip kullanıcılar erişsin
+    [Authorize(Roles = "Admin")]
     public class NewsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -22,7 +23,8 @@ namespace QueenOfApostlesRenewalCentre.Areas.Admin.Controllers
         // GET: Admin/News
         public async Task<IActionResult> Index()
         {
-            var newsList = await _context.News.ToListAsync();
+            // Order news by SortOrder (ascending). You can also order by PublishedDate if desired.
+            var newsList = await _context.News.OrderBy(n => n.SortOrder).ToListAsync();
             return View(newsList);
         }
 
@@ -40,6 +42,12 @@ namespace QueenOfApostlesRenewalCentre.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 news.PublishedDate = DateTime.Now;
+                // If no SortOrder is provided, assign a default value (max existing order + 1)
+                if (news.SortOrder == 0)
+                {
+                    int maxOrder = _context.News.Any() ? _context.News.Max(n => n.SortOrder) : 0;
+                    news.SortOrder = maxOrder + 1;
+                }
                 _context.News.Add(news);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -48,13 +56,15 @@ namespace QueenOfApostlesRenewalCentre.Areas.Admin.Controllers
         }
 
         // GET: Admin/News/Edit/5
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int? id)
         {
+            if (id == null)
+                return NotFound();
+
             var news = await _context.News.FindAsync(id);
             if (news == null)
-            {
                 return NotFound();
-            }
+
             return View(news);
         }
 
@@ -64,9 +74,8 @@ namespace QueenOfApostlesRenewalCentre.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(int id, News news)
         {
             if (id != news.NewsId)
-            {
                 return NotFound();
-            }
+
             if (ModelState.IsValid)
             {
                 try
@@ -76,14 +85,10 @@ namespace QueenOfApostlesRenewalCentre.Areas.Admin.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!NewsExists(news.NewsId))
-                    {
+                    if (!_context.News.Any(n => n.NewsId == id))
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -91,13 +96,15 @@ namespace QueenOfApostlesRenewalCentre.Areas.Admin.Controllers
         }
 
         // GET: Admin/News/Delete/5
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            var news = await _context.News.FindAsync(id);
-            if (news == null)
-            {
+            if (id == null)
                 return NotFound();
-            }
+
+            var news = await _context.News.FirstOrDefaultAsync(n => n.NewsId == id);
+            if (news == null)
+                return NotFound();
+
             return View(news);
         }
 
@@ -112,9 +119,32 @@ namespace QueenOfApostlesRenewalCentre.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool NewsExists(int id)
+        // GET: Admin/News/Reorder
+        public async Task<IActionResult> Reorder()
         {
-            return _context.News.Any(e => e.NewsId == id);
+            var newsList = await _context.News.OrderBy(n => n.SortOrder).ToListAsync();
+            return View(newsList);
+        }
+
+        // POST: Admin/News/Reorder
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Reorder(int[] sortedIds)
+        {
+            // sortedIds is an array of news IDs in the new order.
+            if (sortedIds != null)
+            {
+                for (int i = 0; i < sortedIds.Length; i++)
+                {
+                    var newsItem = await _context.News.FindAsync(sortedIds[i]);
+                    if (newsItem != null)
+                    {
+                        newsItem.SortOrder = i + 1;
+                    }
+                }
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
         }
     }
 }

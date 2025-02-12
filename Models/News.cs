@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QueenOfApostlesRenewalCentre.Models
 {
@@ -16,5 +15,8 @@ namespace QueenOfApostlesRenewalCentre.Models
         public string Content { get; set; }
 
         public DateTime PublishedDate { get; set; }
+
+        // This property is used to manually control the order of news items.
+        public int SortOrder { get; set; }
     }
 }

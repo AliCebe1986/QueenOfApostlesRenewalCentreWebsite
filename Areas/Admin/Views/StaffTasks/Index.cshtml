@@ -1,0 +1,39 @@
+﻿@model IEnumerable<QueenOfApostlesRenewalCentre.Models.StaffTask>
+
+@{
+    ViewData["Title"] = "Staff Task Assignments";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Staff Task Assignments</h2>
+
+<a asp-action="Create" asp-route-staffId="@ViewContext.HttpContext.Request.Query["staffId"]" class="btn btn-primary mb-3">Assign New Task</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Assigned Date</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var task in Model)
+        {
+            <tr>
+                <td>@task.Title</td>
+                <td>@task.Description</td>
+                <td>@task.AssignedDate.ToString("g")</td>
+                <td>@(task.DueDate.HasValue ? task.DueDate.Value.ToString("g") : "N/A")</td>
+                <td>@task.Status</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@task.TaskId" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@task.TaskId" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

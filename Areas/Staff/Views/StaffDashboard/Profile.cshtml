@@ -1,0 +1,17 @@
+﻿@model QueenOfApostlesRenewalCentre.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "Your Profile";
+    Layout = "~/Areas/Staff/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h2>Your Profile</h2>
+    <div class="card">
+        <div class="card-body">
+            <p><strong>Name:</strong> @Model.Name @Model.Surname</p>
+            <p><strong>Email:</strong> @Model.Email</p>
+            <!-- Additional profile details can be added here -->
+        </div>
+    </div>
+</div>

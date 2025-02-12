@@ -1,9 +1,13 @@
-﻿@{
+﻿@model IEnumerable<QueenOfApostlesRenewalCentre.Models.News>
+
+@{
     ViewData["Title"] = "Home";
     Layout = "~/Views/Shared/_Layout.cshtml";
     // Output the login status as a lowercase string ("true" or "false")
     var isLoggedIn = User.Identity.IsAuthenticated.ToString().ToLower();
 }
+
+
 
 <!-- Book Now Widget -->
 <div class="container mt-5">
@@ -37,39 +41,55 @@
     </div>
 </div>
 
+<!-- Latest News Section -->
+<div class="container mt-5">
+    <h2>Latest News</h2>
+    <div class="row">
+        @foreach (var news in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        @news.Title
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">@((news.Content.Length > 100) ? news.Content.Substring(0, 100) + "..." : news.Content)</p>
+                    </div>
+                    <div class="card-footer text-end">
+                        <small class="text-muted">Published: @news.PublishedDate.ToString("g")</small>
+                        <a href="/News/Details/@news.NewsId" class="btn btn-sm btn-outline-primary float-end">Read More</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
 @section Scripts {
     <script>
-        // Retrieve login status from Razor variable (as a string "true" or "false")
         var isLoggedIn = "@isLoggedIn";
 
         document.getElementById('bookNowButton').addEventListener('click', function () {
-            // Get form field values
             var arrival = document.getElementById('arrival').value;
             var departure = document.getElementById('departure').value;
             var rooms = document.getElementById('rooms').value;
             var guests = document.getElementById('guests').value;
 
-            // Basic form validation
             if (!arrival || !departure || !rooms || !guests) {
                 alert("Please fill in all fields.");
                 return;
             }
 
-            // Check if user is logged in
             if (isLoggedIn !== "true") {
                 alert("You must be logged in to book.");
-                // Redirect to login page with returnUrl to /Book
                 window.location.href = "/Account/Login?returnUrl=/Book";
                 return;
             }
 
-            // Construct query string from the form values
             var query = "?arrival=" + encodeURIComponent(arrival) +
                 "&departure=" + encodeURIComponent(departure) +
                 "&rooms=" + encodeURIComponent(rooms) +
                 "&guests=" + encodeURIComponent(guests);
-
-            // Redirect to the Book page with query parameters
             window.location.href = "/Book" + query;
         });
     </script>

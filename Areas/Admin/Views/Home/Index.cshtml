@@ -8,7 +8,7 @@
 
     <div class="row">
         <!-- Conference Room Management Card -->
-        <div class="col-md-6 col-lg-3 mb-4">
+        <div class="col-md-4 col-lg-2 mb-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white">
                     Conference Rooms
@@ -21,20 +21,20 @@
         </div>
 
         <!-- Registration Management Card -->
-        <div class="col-md-6 col-lg-3 mb-4">
+        <div class="col-md-4 col-lg-2 mb-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-success text-white">
                     Registrations
                 </div>
                 <div class="card-body">
-                    <p class="card-text">Handle registration forms, updates, and backups.</p>
+                    <p class="card-text">Handle registration forms and backups.</p>
                     <a href="/Admin/Registration" class="btn btn-outline-success btn-sm">Manage</a>
                 </div>
             </div>
         </div>
 
         <!-- Forms & Facilities Card -->
-        <div class="col-md-6 col-lg-3 mb-4">
+        <div class="col-md-4 col-lg-2 mb-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-warning text-white">
                     Forms & Facilities
@@ -47,7 +47,7 @@
         </div>
 
         <!-- Financial Management Card -->
-        <div class="col-md-6 col-lg-3 mb-4">
+        <div class="col-md-4 col-lg-2 mb-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-danger text-white">
                     Finances
@@ -55,6 +55,34 @@
                 <div class="card-body">
                     <p class="card-text">Oversee invoices, payments, and revenue reports.</p>
                     <a href="/Admin/Financial" class="btn btn-outline-danger btn-sm">Manage</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Staff Management Card -->
+        <div class="col-md-4 col-lg-2 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    Staff Management
+                </div>
+                <div class="card-body">
+                    <p class="card-text">View, add, edit, and delete staff members. Also assign tasks.</p>
+                    <a href="/Admin/Staffs" class="btn btn-outline-info btn-sm">Manage</a>
+                    <!-- Optionally, you can add a link for task assignment -->
+                    <a href="/Admin/StaffTasks?staffId=" class="btn btn-outline-info btn-sm mt-2">Assign Tasks</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- News Management Card -->
+        <div class="col-md-4 col-lg-2 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    News
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Create, edit, delete, and reorder news items for the public site.</p>
+                    <a href="/Admin/News" class="btn btn-outline-secondary btn-sm">Manage</a>
                 </div>
             </div>
         </div>

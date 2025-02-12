@@ -1,0 +1,31 @@
+﻿@model QueenOfApostlesRenewalCentre.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "Delete Staff";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete Staff</h2>
+
+<h3>Are you sure you want to delete this staff member?</h3>
+
+<div>
+    <h4>@Model.Name @Model.Surname</h4>
+    <dl class="row">
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
+    </dl>
+</div>
+
+<form asp-action="Delete">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

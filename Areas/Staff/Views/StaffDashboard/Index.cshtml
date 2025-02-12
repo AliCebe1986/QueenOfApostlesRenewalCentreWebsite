@@ -1,0 +1,65 @@
+﻿@model IEnumerable<QueenOfApostlesRenewalCentre.Models.RoomCleaning>
+
+@{
+    ViewData["Title"] = "Staff Dashboard";
+    Layout = "~/Areas/Staff/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h2>Staff Dashboard</h2>
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total Tasks</h5>
+                    <p class="card-text">@ViewBag.TotalTasks</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Completed Tasks</h5>
+                    <p class="card-text">@ViewBag.CompletedTasks</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Pending Tasks</h5>
+                    <p class="card-text">@ViewBag.PendingTasks</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3>Your Cleaning Tasks</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Room Number</th>
+                <th>Departure Date</th>
+                <th>Status</th>
+                <th>Cleaning Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in Model)
+            {
+                <tr>
+                    <td>@task.RoomNumber</td>
+                    <td>@task.DepartureDate.ToShortDateString()</td>
+                    <td>@task.CleaningStatus</td>
+                    <td>@(task.CleaningDate.HasValue ? task.CleaningDate.Value.ToString("g") : "N/A")</td>
+                    <td>
+                        <a asp-controller="CleaningSchedule" asp-action="Edit" asp-route-id="@task.Id" class="btn btn-sm btn-warning">Edit</a>
+                        <a asp-controller="CleaningSchedule" asp-action="Delete" asp-route-id="@task.Id" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

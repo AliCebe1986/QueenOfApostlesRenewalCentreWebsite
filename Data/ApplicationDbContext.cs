@@ -16,6 +16,7 @@ namespace QueenOfApostlesRenewalCentre.Data
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Staff> Staffs { get; set; }
+        public DbSet<StaffTask> StaffTasks { get; set; }
         public DbSet<WeeklySchedule> WeeklySchedules { get; set; }
         public DbSet<RoomCleaning> RoomCleanings { get; set; }
         public DbSet<News> News { get; set; }

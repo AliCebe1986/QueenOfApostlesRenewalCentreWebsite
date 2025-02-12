@@ -16,21 +16,23 @@
 
     <link rel="stylesheet" href="~/css/site.css" />
     <style>
-        /* Use Roboto font and light background */
+        /* Global font and background */
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #f8f9fa;
-            /* Keep top padding for fixed navbar */
+            /* Reserve space for the fixed navbar */
             padding-top: 80px;
         }
-        /* Remove any extra margin above the slider */
+
+        /* Carousel (slider) adjustments */
         .carousel {
-            margin-top: 0 !important;
+            margin-top: 0 !important; /* Remove any extra gap above the slider */
         }
-        /* Set a fixed height for slider images */
+
         .carousel-item img {
-            height: 300px; /* Adjust this value as needed */
-            object-fit: cover;
+            max-height: 300px; /* Set standard maximum height */
+            width: 100%;
+            object-fit: cover; /* Crop image to fill area */
         }
     </style>
 </head>
@@ -47,13 +49,12 @@
                 <div class="collapse navbar-collapse" id="mainNavbar">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/About">About Us</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/Registration">Registration</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/Programs">Programs</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/Facilities">Facilities</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/Donate">Donate</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/Resources">Resources</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/Contact">Contact Us</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/Pages/About">About Us</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/Pages/Programs">Programs</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/Pages/Facilities">Facilities</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/Pages/Donate">Donate</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/Pages/Resources">Resources</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/Pages/Contact">Contact Us</a></li>
 
                         @if (User.Identity.IsAuthenticated)
                         {

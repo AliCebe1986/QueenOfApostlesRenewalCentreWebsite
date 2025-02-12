@@ -1,0 +1,42 @@
+﻿@model IEnumerable<QueenOfApostlesRenewalCentre.Models.RoomCleaning>
+
+@{
+    ViewData["Title"] = "Your Cleaning Tasks";
+    Layout = "~/Areas/Staff/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Your Cleaning Tasks</h2>
+
+@if (!Model.Any())
+{
+    <p>No cleaning tasks assigned.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Room Number</th>
+                <th>Departure Date</th>
+                <th>Status</th>
+                <th>Cleaning Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in Model)
+            {
+                <tr>
+                    <td>@task.RoomNumber</td>
+                    <td>@task.DepartureDate.ToShortDateString()</td>
+                    <td>@task.CleaningStatus</td>
+                    <td>@(task.CleaningDate.HasValue ? task.CleaningDate.Value.ToString("g") : "N/A")</td>
+                    <td>
+                        <a asp-controller="CleaningSchedule" asp-action="Edit" asp-route-id="@task.Id" class="btn btn-sm btn-warning">Edit</a>
+                        <a asp-controller="CleaningSchedule" asp-action="Delete" asp-route-id="@task.Id" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
