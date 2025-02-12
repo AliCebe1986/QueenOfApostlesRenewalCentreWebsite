@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using System;
 using System.Threading.Tasks;
 
 namespace QueenOfApostlesRenewalCentre.Services
@@ -13,10 +14,12 @@ namespace QueenOfApostlesRenewalCentre.Services
 
         public EmailService(IConfiguration configuration)
         {
-            // appsettings.json 
-            _apiKey = configuration["SendGrid:ApiKey"];
-            _fromEmail = configuration["SendGrid:FromEmail"];
-            _fromName = configuration["SendGrid:FromName"];
+            _apiKey = configuration["SendGrid:ApiKey"]
+                ?? throw new ArgumentNullException("SendGrid:ApiKey configuration is missing");
+            _fromEmail = configuration["SendGrid:FromEmail"]
+                ?? throw new ArgumentNullException("SendGrid:FromEmail configuration is missing");
+            _fromName = configuration["SendGrid:FromName"]
+                ?? throw new ArgumentNullException("SendGrid:FromName configuration is missing");
         }
 
         public async Task SendEmailAsync(string toEmail, string subject, string plainTextContent, string htmlContent)
@@ -25,8 +28,7 @@ namespace QueenOfApostlesRenewalCentre.Services
             var from = new EmailAddress(_fromEmail, _fromName);
             var to = new EmailAddress(toEmail);
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-            var response = await client.SendEmailAsync(msg);
-            
+            await client.SendEmailAsync(msg);
         }
     }
 }
