@@ -11,7 +11,7 @@ env:
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 8.0.x
   # Set WORKING_DIRECTORY to your project folder; adjust this path as needed.
-  WORKING_DIRECTORY: ./QueenOfApostlesRenewalCentre
+  WORKING_DIRECTORY: .
 
 jobs:
   build:
