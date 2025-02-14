@@ -58,37 +58,62 @@ namespace QueenOfApostlesRenewalCentre.Controllers
         // POST: /Account/Register
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            if (ModelState.IsValid)
+            // Set SelectedRole to "User" if it's null or empty
+            if (string.IsNullOrEmpty(model.SelectedRole))
             {
-                
+                model.SelectedRole = "User";
+            }
+
+            // Check for and show validation errors
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
                 var user = new ApplicationUser
                 {
                     UserName = model.Email,
                     Email = model.Email,
-                    Name = model.Name,         
-                    Surname = model.Surname    
+                    Name = model.Name,
+                    Surname = model.Surname,
+                    CreatedDate = DateTime.UtcNow
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
+
                 if (result.Succeeded)
                 {
-                    
+                    // Always assign User role for public registration
                     await _userManager.AddToRoleAsync(user, "User");
 
+                    // Sign in the user immediately after registration
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                        return Redirect(returnUrl);
-                    else
-                        return RedirectToAction("Index", "Home");
+
+                    // Add success message to TempData for display on redirect
+                    TempData["SuccessMessage"] = "Registration successful!";
+
+                    // Redirect to home page
+                    return RedirectToAction("Index", "Home");
                 }
+
+                // If we got this far, something failed, redisplay form
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Exception during registration: {ex.Message}");
+                ModelState.AddModelError(string.Empty, "An error occurred during registration: " + ex.Message);
+            }
+
+            // If we got this far, something failed, redisplay form
             return View(model);
         }
 
