@@ -20,3 +20,7 @@ html {
 body {
   margin-bottom: 60px;
 }
+.navbar-brand img {
+    margin-right: 10px;
+    border-radius: 5px; 
+}
