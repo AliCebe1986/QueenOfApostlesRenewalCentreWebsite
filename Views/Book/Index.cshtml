@@ -5,64 +5,145 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Book a Room</h2>
+<div class="container mt-4">
+    <h2>Book a Room</h2>
 
-<form asp-action="Index" method="post">
-    @Html.AntiForgeryToken()
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
-    <div class="mb-3">
-        <label asp-for="Arrival" class="form-label">Arrival</label>
-        <input asp-for="Arrival" type="date" class="form-control" />
-        <span asp-validation-for="Arrival" class="text-danger"></span>
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Booking Details</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="CheckAvailability" method="post" id="availability-form">
+                @Html.AntiForgeryToken()
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Arrival" class="form-label">Arrival</label>
+                        <input asp-for="Arrival" type="date" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                        <span asp-validation-for="Arrival" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Departure" class="form-label">Departure</label>
+                        <input asp-for="Departure" type="date" class="form-control" min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" />
+                        <span asp-validation-for="Departure" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Guests" class="form-label">Number of Guests</label>
+                        <input asp-for="Guests" type="number" class="form-control" min="1" max="20" />
+                        <span asp-validation-for="Guests" class="text-danger"></span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-info">Check Availability</button>
+            </form>
+        </div>
     </div>
-    <div class="mb-3">
-        <label asp-for="Departure" class="form-label">Departure</label>
-        <input asp-for="Departure" type="date" class="form-control" />
-        <span asp-validation-for="Departure" class="text-danger"></span>
+
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Complete Your Reservation</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Index" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Hidden fields to maintain state -->
+                <input type="hidden" asp-for="Arrival" />
+                <input type="hidden" asp-for="Departure" />
+                <input type="hidden" asp-for="Guests" />
+                <input type="hidden" asp-for="Rooms" />
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="GuestName" class="form-label">Guest Name</label>
+                        <input asp-for="GuestName" class="form-control" />
+                        <span asp-validation-for="GuestName" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Email" class="form-label">Email Address</label>
+                        <input asp-for="Email" class="form-control" type="email" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
+                        <input asp-for="PhoneNumber" class="form-control" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="RoomId" class="form-label">Select Room</label>
+                        <select asp-for="RoomId" class="form-select">
+                            <option value="">-- Select a Room --</option>
+                            @if (Model.AvailableRooms != null)
+                            {
+                                @foreach (var item in Model.AvailableRooms)
+                                {
+                                    if (item.Value == Model.RoomId.ToString())
+                                    {
+                                        <option value="@item.Value" selected="selected">@item.Text</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@item.Value">@item.Text</option>
+                                    }
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="RoomId" class="text-danger"></span>
+                        @if (Model.AvailableRooms == null || !Model.AvailableRooms.Any())
+                        {
+                            <div class="text-danger mt-2">No rooms are available for the selected dates and number of guests.</div>
+                        }
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="OvernightOption" class="form-label">Overnight Option</label>
+                        <select asp-for="OvernightOption" class="form-select" id="overnightOption">
+                            <option value="">-- Select Overnight Option --</option>
+                            <option value="No">No Overnight</option>
+                            <option value="With">With Overnight</option>
+                        </select>
+                        <span asp-validation-for="OvernightOption" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="ReservationType" class="form-label">Reservation Type</label>
+                        <select asp-for="ReservationType" class="form-select" id="reservationType">
+                            <option value="">-- Select Reservation Type --</option>
+                            @* Options populated by JavaScript *@
+                        </select>
+                        <span asp-validation-for="ReservationType" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="SpecialRequests" class="form-label">Special Requests</label>
+                    <textarea asp-for="SpecialRequests" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="SpecialRequests" class="text-danger"></span>
+                </div>
+
+                <hr class="my-4">
+
+                <div class="alert alert-info">
+                    <p><strong>Important:</strong> Your booking will be reviewed and confirmed by our staff. You will receive a confirmation email once approved.</p>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg" id="bookNowBtn">Book Now</button>
+                <a href="/" class="btn btn-outline-secondary">Cancel</a>
+            </form>
+        </div>
     </div>
-    <div class="mb-3">
-        <label asp-for="Rooms" class="form-label">Rooms</label>
-        <input asp-for="Rooms" type="number" class="form-control" min="1" />
-        <span asp-validation-for="Rooms" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="Guests" class="form-label">Guests</label>
-        <input asp-for="Guests" type="number" class="form-control" min="1" />
-        <span asp-validation-for="Guests" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="GuestName" class="form-label">Guest Name</label>
-        <input asp-for="GuestName" class="form-control" />
-        <span asp-validation-for="GuestName" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="RoomId" class="form-label">Select Room</label>
-        <select asp-for="RoomId" class="form-select" asp-items="Model.AvailableRooms">
-            <option value="">-- Select a Room --</option>
-        </select>
-        <span asp-validation-for="RoomId" class="text-danger"></span>
-    </div>
-    <!-- Overnight Option Dropdown -->
-    <div class="mb-3">
-        <label asp-for="OvernightOption" class="form-label">Overnight Option</label>
-        <select asp-for="OvernightOption" class="form-select" id="overnightOption">
-            <option value="">-- Select Overnight Option --</option>
-            <option value="No">No Overnight</option>
-            <option value="With">With Overnight</option>
-        </select>
-        <span asp-validation-for="OvernightOption" class="text-danger"></span>
-    </div>
-    <!-- Reservation Type Dropdown -->
-    <div class="mb-3">
-        <label asp-for="ReservationType" class="form-label">Reservation Type</label>
-        <select asp-for="ReservationType" class="form-select" id="reservationType">
-            <option value="">-- Select Reservation Type --</option>
-            <!-- Options will be populated by JavaScript -->
-        </select>
-        <span asp-validation-for="ReservationType" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Book Now</button>
-</form>
+</div>
 
 @section Scripts {
     @{
@@ -84,9 +165,9 @@
             ]
         };
 
-        // When the Overnight Option dropdown changes, update the Reservation Type dropdown
-        document.getElementById("overnightOption").addEventListener("change", function () {
-            var selectedOption = this.value;
+        // Initialize reservation type dropdown based on selected overnight option
+        function updateReservationTypes() {
+            var selectedOption = document.getElementById("overnightOption").value;
             var reservationTypeDropdown = document.getElementById("reservationType");
 
             // Clear current options
@@ -100,6 +181,49 @@
                     reservationTypeDropdown.appendChild(option);
                 });
             }
+        }
+
+        // When the Overnight Option dropdown changes, update the Reservation Type dropdown
+        document.getElementById("overnightOption").addEventListener("change", updateReservationTypes);
+
+        // Initialize reservation types on page load and preserve any preselected value
+        document.addEventListener("DOMContentLoaded", function() {
+            updateReservationTypes();
+            var preselectedValue = '@Html.Raw(Json.Serialize(Model.ReservationType))';
+            if (preselectedValue && preselectedValue !== '') {
+                var dropdown = document.getElementById('reservationType');
+                for (var i = 0; i < dropdown.options.length; i++) {
+                    if (dropdown.options[i].value === preselectedValue) {
+                        dropdown.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            // Add client-side validation for booking submission
+            document.getElementById('bookNowBtn').addEventListener('click', function(e) {
+                var roomId = document.querySelector('[name="RoomId"]').value;
+                var overnightOption = document.getElementById('overnightOption').value;
+                var reservationType = document.getElementById('reservationType').value;
+
+                if (!roomId) {
+                    e.preventDefault();
+                    alert('Please select a room before booking.');
+                    return false;
+                }
+
+                if (!overnightOption) {
+                    e.preventDefault();
+                    alert('Please select an overnight option.');
+                    return false;
+                }
+
+                if (!reservationType) {
+                    e.preventDefault();
+                    alert('Please select a reservation type.');
+                    return false;
+                }
+            });
         });
     </script>
 }

@@ -115,5 +115,22 @@ namespace QueenOfApostlesRenewalCentre.Areas.Admin.Controllers
         {
             return _context.Rooms.Any(e => e.RoomId == id);
         }
+        // GET: Admin/Rooms/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var room = await _context.Rooms
+                .FirstOrDefaultAsync(m => m.RoomId == id);
+            if (room == null)
+            {
+                return NotFound();
+            }
+
+            return View(room);
+        }
     }
 }
