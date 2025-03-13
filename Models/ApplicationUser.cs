@@ -11,8 +11,7 @@ namespace QueenOfApostlesRenewalCentre.Models
 
         [Required]
         public string Surname { get; set; }
-        public DateTime CreatedDate { get; set; }
 
-
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
     }
 }

@@ -1,0 +1,77 @@
+﻿@page
+@model IEnumerable<QueenOfApostlesRenewalCentre.Models.Room>
+@{
+    ViewData["Title"] = "Room Layout";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Room Layout</h2>
+
+<img src="~/images/room-layout.png" usemap="#roommap" class="img-fluid" alt="Room Layout" />
+
+<map name="roommap">
+    <area shape="rect" coords="50,50,100,100" href="@Url.Action("Details", "Rooms", new { id = 1 })" alt="Room 1" />
+    <area shape="rect" coords="110,50,160,100" href="@Url.Action("Details", "Rooms", new { id = 2 })" alt="Room 2" />
+    <area shape="rect" coords="170,50,220,100" href="@Url.Action("Details", "Rooms", new { id = 3 })" alt="Room 3" />
+    <area shape="rect" coords="230,50,280,100" href="@Url.Action("Details", "Rooms", new { id = 4 })" alt="Room 4" />
+    <area shape="rect" coords="290,50,340,100" href="@Url.Action("Details", "Rooms", new { id = 5 })" alt="Room 5" />
+    <area shape="rect" coords="350,50,400,100" href="@Url.Action("Details", "Rooms", new { id = 6 })" alt="Room 6" />
+    <area shape="rect" coords="410,50,460,100" href="@Url.Action("Details", "Rooms", new { id = 7 })" alt="Room 7" />
+    <area shape="rect" coords="470,50,520,100" href="@Url.Action("Details", "Rooms", new { id = 8 })" alt="Room 8" />
+    <area shape="rect" coords="530,50,580,100" href="@Url.Action("Details", "Rooms", new { id = 9 })" alt="Room 9" />
+    <area shape="rect" coords="590,50,640,100" href="@Url.Action("Details", "Rooms", new { id = 10 })" alt="Room 10" />
+    <area shape="rect" coords="650,50,700,100" href="@Url.Action("Details", "Rooms", new { id = 11 })" alt="Room 11" />
+    <area shape="rect" coords="710,50,760,100" href="@Url.Action("Details", "Rooms", new { id = 12 })" alt="Room 12" />
+    <area shape="rect" coords="770,50,820,100" href="@Url.Action("Details", "Rooms", new { id = 13 })" alt="Room 13" />
+    <area shape="rect" coords="830,50,880,100" href="@Url.Action("Details", "Rooms", new { id = 14 })" alt="Room 14" />
+    <area shape="rect" coords="890,50,940,100" href="@Url.Action("Details", "Rooms", new { id = 15 })" alt="Room 15" />
+    <area shape="rect" coords="950,50,1000,100" href="@Url.Action("Details", "Rooms", new { id = 16 })" alt="Room 16" />
+    <area shape="rect" coords="1010,50,1060,100" href="@Url.Action("Details", "Rooms", new { id = 17 })" alt="Room 17" />
+    <area shape="rect" coords="1070,50,1120,100" href="@Url.Action("Details", "Rooms", new { id = 18 })" alt="Room 18" />
+    <area shape="rect" coords="1130,50,1180,100" href="@Url.Action("Details", "Rooms", new { id = 19 })" alt="Room 19" />
+    <area shape="rect" coords="1190,50,1240,100" href="@Url.Action("Details", "Rooms", new { id = 20 })" alt="Room 20" />
+    <area shape="rect" coords="1250,50,1300,100" href="@Url.Action("Details", "Rooms", new { id = 21 })" alt="Room 21" />
+    <area shape="rect" coords="1310,50,1360,100" href="@Url.Action("Details", "Rooms", new { id = 22 })" alt="Room 22" />
+    <area shape="rect" coords="1370,50,1420,100" href="@Url.Action("Details", "Rooms", new { id = 23 })" alt="Room 23" />
+    <area shape="rect" coords="1430,50,1480,100" href="@Url.Action("Details", "Rooms", new { id = 24 })" alt="Room 24" />
+    <area shape="rect" coords="1490,50,1540,100" href="@Url.Action("Details", "Rooms", new { id = 25 })" alt="Room 25" />
+    <area shape="rect" coords="1550,50,1600,100" href="@Url.Action("Details", "Rooms", new { id = 26 })" alt="Room 26" />
+    <area shape="rect" coords="1610,50,1660,100" href="@Url.Action("Details", "Rooms", new { id = 27 })" alt="Room 27" />
+    <area shape="rect" coords="1670,50,1720,100" href="@Url.Action("Details", "Rooms", new { id = 28 })" alt="Room 28" />
+    <area shape="rect" coords="1730,50,1780,100" href="@Url.Action("Details", "Rooms", new { id = 29 })" alt="Room 29" />
+    <area shape="rect" coords="1790,50,1840,100" href="@Url.Action("Details", "Rooms", new { id = 30 })" alt="Room 30" />
+    <area shape="rect" coords="1850,50,1900,100" href="@Url.Action("Details", "Rooms", new { id = 31 })" alt="Room 31" />
+    <area shape="rect" coords="1910,50,1960,100" href="@Url.Action("Details", "Rooms", new { id = 32 })" alt="Room 32" />
+    <area shape="rect" coords="1970,50,2020,100" href="@Url.Action("Details", "Rooms", new { id = 33 })" alt="Room 33" />
+    <area shape="rect" coords="2030,50,2080,100" href="@Url.Action("Details", "Rooms", new { id = 34 })" alt="Room 34" />
+    <area shape="rect" coords="2090,50,2140,100" href="@Url.Action("Details", "Rooms", new { id = 35 })" alt="Room 35" />
+    <area shape="rect" coords="2150,50,2200,100" href="@Url.Action("Details", "Rooms", new { id = 36 })" alt="Room 36" />
+    <area shape="rect" coords="2210,50,2260,100" href="@Url.Action("Details", "Rooms", new { id = 37 })" alt="Room 37" />
+    <area shape="rect" coords="2270,50,2320,100" href="@Url.Action("Details", "Rooms", new { id = 38 })" alt="Room 38" />
+    <area shape="rect" coords="2330,50,2380,100" href="@Url.Action("Details", "Rooms", new { id = 39 })" alt="Room 39" />
+    <area shape="rect" coords="2390,50,2440,100" href="@Url.Action("Details", "Rooms", new { id = 40 })" alt="Room 40" />
+    <area shape="rect" coords="2450,50,2500,100" href="@Url.Action("Details", "Rooms", new { id = 41 })" alt="Room 41" />
+    <area shape="rect" coords="2510,50,2560,100" href="@Url.Action("Details", "Rooms", new { id = 42 })" alt="Room 42" />
+    <area shape="rect" coords="2570,50,2620,100" href="@Url.Action("Details", "Rooms", new { id = 43 })" alt="Room 43" />
+    <area shape="rect" coords="2630,50,2680,100" href="@Url.Action("Details", "Rooms", new { id = 44 })" alt="Room 44" />
+    <area shape="rect" coords="2690,50,2740,100" href="@Url.Action("Details", "Rooms", new { id = 45 })" alt="Room 45" />
+    <area shape="rect" coords="2750,50,2800,100" href="@Url.Action("Details", "Rooms", new { id = 46 })" alt="Room 46" />
+    <area shape="rect" coords="2810,50,2860,100" href="@Url.Action("Details", "Rooms", new { id = 47 })" alt="Room 47" />
+    <area shape="rect" coords="2870,50,2920,100" href="@Url.Action("Details", "Rooms", new { id = 48 })" alt="Room 48" />
+    <area shape="rect" coords="2930,50,2980,100" href="@Url.Action("Details", "Rooms", new { id = 49 })" alt="Room 49" />
+    <area shape="rect" coords="2990,50,3040,100" href="@Url.Action("Details", "Rooms", new { id = 50 })" alt="Room 50" />
+    <area shape="rect" coords="3050,50,3100,100" href="@Url.Action("Details", "Rooms", new { id = 51 })" alt="Room 51" />
+    <area shape="rect" coords="3110,50,3160,100" href="@Url.Action("Details", "Rooms", new { id = 52 })" alt="Room 52" />
+    <area shape="rect" coords="3170,50,3220,100" href="@Url.Action("Details", "Rooms", new { id = 53 })" alt="Room 53" />
+    <area shape="rect" coords="3230,50,3280,100" href="@Url.Action("Details", "Rooms", new { id = 54 })" alt="Room 54" />
+    <area shape="rect" coords="3290,50,3340,100" href="@Url.Action("Details", "Rooms", new { id = 55 })" alt="Room 55" />
+    <area shape="rect" coords="3350,50,3400,100" href="@Url.Action("Details", "Rooms", new { id = 56 })" alt="Room 56" />
+    <area shape="rect" coords="3410,50,3460,100" href="@Url.Action("Details", "Rooms", new { id = 57 })" alt="Room 57" />
+    <area shape="rect" coords="3470,50,3520,100" href="@Url.Action("Details", "Rooms", new { id = 58 })" alt="Room 58" />
+    <area shape="rect" coords="3530,50,3580,100" href="@Url.Action("Details", "Rooms", new { id = 59 })" alt="Room 59" />
+    <area shape="rect" coords="3590,50,3640,100" href="@Url.Action("Details", "Rooms", new { id = 60 })" alt="Room 60" />
+    <area shape="rect" coords="3650,50,3700,100" href="@Url.Action("Details", "Rooms", new { id = 61 })" alt="Room 61" />
+    <area shape="rect" coords="3710,50,3760,100" href="@Url.Action("Details", "Rooms", new { id = 62 })" alt="Room 62" />
+    <area shape="rect" coords="3770,50,3820,100" href="@Url.Action("Details", "Rooms", new { id = 63 })" alt="Room 63" />
+    <area shape="rect" coords="3830,50,3880,100" href="@Url.Action("Details", "Rooms", new { id = 64 })" alt="Room 64" />
+</map>

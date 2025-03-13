@@ -1,0 +1,69 @@
+﻿@model QueenOfApostlesRenewalCentre.Models.Booking
+
+@{
+    ViewData["Title"] = "Cancel Booking";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="mb-0">Cancel Booking</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h4 class="alert-heading">Are you sure you want to cancel this booking?</h4>
+                        <p>Please note that cancellation may be subject to our cancellation policy.</p>
+                    </div>
+
+                    <h5>Booking Details</h5>
+                    <hr />
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p><strong>Booking Reference:</strong> #@Model.BookingId</p>
+                            <p><strong>Guest Name:</strong> @Model.GuestName</p>
+                            <p>
+                                <strong>Room:</strong>
+                                @if (Model.Room != null)
+                                {
+                                    @Model.Room.Name
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Room details not available</span>
+                                }
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Check-in Date:</strong> @Model.StartDate.ToShortDateString()</p>
+                            <p><strong>Check-out Date:</strong> @Model.EndDate.ToShortDateString()</p>
+                            <p><strong>Reservation Type:</strong> @(string.IsNullOrEmpty(Model.ReservationType) ? "Not specified" : Model.ReservationType)</p>
+                        </div>
+                    </div>
+
+                    <form asp-action="Cancel" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="BookingId" />
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="confirmCancellation" required />
+                                <label class="form-check-label" for="confirmCancellation">
+                                    I understand that by cancelling this booking, I may not be able to recover it later.
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="MyBookings" class="btn btn-secondary">Back to My Bookings</a>
+                            <button type="submit" class="btn btn-danger">Confirm Cancellation</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
