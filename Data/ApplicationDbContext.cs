@@ -20,5 +20,6 @@ namespace QueenOfApostlesRenewalCentre.Data
         public DbSet<WeeklySchedule> WeeklySchedules { get; set; }
         public DbSet<RoomCleaning> RoomCleanings { get; set; }
         public DbSet<News> News { get; set; }
+        public DbSet<ConferenceRoom> ConferenceRooms { get; set;}
     }
 }
