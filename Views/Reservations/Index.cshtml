@@ -4,16 +4,19 @@
 }
 <h2>My Reservations</h2>
 
+<div id="weeklyBookingsResult"></div>
+
 <table class="table table-bordered">
     <thead>
         <tr>
             <th>Guest Name</th>
-            <th>Rooms</th> <!-- Updated from "Room" to "Rooms" -->
+            <th>Rooms</th>
             <th>Start Date</th>
             <th>End Date</th>
             <th>Status</th>
             <th>Reservation Type</th>
             <th>Actions</th>
+            <th>Weekly Bookings</th>
         </tr>
     </thead>
     <tbody>
@@ -41,9 +44,44 @@
                         <a asp-action="Cancel" asp-route-id="@reservation.BookingId" class="btn btn-danger btn-sm">Cancel</a>
                     }
                 </td>
+                <td>
+                    @if (reservation.Rooms != null && reservation.Rooms.Any()) {
+                        @foreach (var room in reservation.Rooms) {
+                            <button class="checkWeeklyBookingsBtn" data-room-id="@room.RoomId">Check Weekly Bookings</button>
+                        }
+                    }
+                </td>
             </tr>
         }
     </tbody>
 </table>
 
 <a asp-action="Create" class="btn btn-primary">New Reservation</a>
+
+<script>
+    document.querySelectorAll('.checkWeeklyBookingsBtn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const roomId = this.getAttribute('data-room-id');
+            const weekStartDate = prompt("Enter the start date of the week (YYYY-MM-DD):");
+
+            fetch(`/Reservations/GetWeeklyBookings?roomId=${roomId}&weekStartDate=${weekStartDate}`)
+                .then(response => response.json())
+                .then(data => {
+                    const resultDiv = document.getElementById('weeklyBookingsResult');
+                    resultDiv.innerHTML = '';
+                    if (data.length === 0) {
+                        resultDiv.innerHTML = '<p>No bookings found for this week.</p>';
+                    } else {
+                        const list = document.createElement('ul');
+                        data.forEach(booking => {
+                            const listItem = document.createElement('li');
+                            listItem.textContent = `Booking ID: ${booking.bookingId}, Guest: ${booking.guestName}, Dates: ${booking.startDate} to ${booking.endDate}`;
+                            list.appendChild(listItem);
+                        });
+                        resultDiv.appendChild(list);
+                    }
+                })
+                .catch(error => console.error('Error fetching weekly bookings:', error));
+        });
+    });
+</script>

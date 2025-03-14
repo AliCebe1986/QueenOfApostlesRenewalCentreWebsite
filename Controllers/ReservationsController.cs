@@ -17,6 +17,22 @@ namespace QueenOfApostlesRenewalCentre.Controllers {
             _emailService = emailService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetWeeklyBookings(int roomId, DateTime weekStartDate)
+        {
+            DateTime weekEndDate = weekStartDate.AddDays(6);
+
+            var bookings = await _context.Bookings
+                .Where(b => b.RoomIds.Contains(roomId) &&
+                            b.Status != "Cancelled" &&
+                            b.StartDate <= weekEndDate &&
+                            b.EndDate >= weekStartDate)
+                .ToListAsync();
+
+            return Json(bookings);
+        }
+
+
         // GET: Reservations/Create
         public IActionResult Create() {
             ViewData["Rooms"] = _context.Rooms.ToList();
