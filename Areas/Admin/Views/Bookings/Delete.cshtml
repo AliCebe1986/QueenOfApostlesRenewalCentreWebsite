@@ -13,8 +13,13 @@
     <dl class="row">
         <dt class="col-sm-3">Guest Name</dt>
         <dd class="col-sm-9">@Model.GuestName</dd>
-        <dt class="col-sm-3">Room</dt>
-        <dd class="col-sm-9">@Model.Room?.Name</dd>
+        <dt class="col-sm-3">Rooms</dt>
+        <dd class="col-sm-9">
+            @foreach (var room in Model.Rooms)  
+            {
+                <p>@room.Name</p> <!-- Displaying each room name in the booking -->
+            }
+        </dd>
         <dt class="col-sm-3">Arrival</dt>
         <dd class="col-sm-9">@Model.StartDate.ToShortDateString()</dd>
         <dt class="col-sm-3">Departure</dt>

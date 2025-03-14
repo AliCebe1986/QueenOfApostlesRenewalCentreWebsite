@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QueenOfApostlesRenewalCentre.Data;
 
@@ -11,9 +12,11 @@ using QueenOfApostlesRenewalCentre.Data;
 namespace QueenOfApostlesRenewalCentre.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250314004908_AddMultipleRoomsSupport")]
+    partial class AddMultipleRoomsSupport
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -317,40 +320,19 @@ namespace QueenOfApostlesRenewalCentre.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InvoiceId"));
 
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
                     b.Property<int>("BookingId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("BreakfastCost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("DinnerCost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("DirectorsDiscount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("DueDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("IssuedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("LunchCost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("PremisesUseCost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("RoomCost")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("TotalAmount")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
 
                     b.HasKey("InvoiceId");
 

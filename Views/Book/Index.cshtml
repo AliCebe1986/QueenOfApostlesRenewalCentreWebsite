@@ -39,6 +39,11 @@
                         <input asp-for="Guests" type="number" class="form-control" min="1" max="20" />
                         <span asp-validation-for="Guests" class="text-danger"></span>
                     </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Rooms" class="form-label">Number of Rooms</label>
+                        <input asp-for="Rooms" type="number" class="form-control" min="1" max="10" />
+                        <span asp-validation-for="Rooms" class="text-danger"></span>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-info">Check Availability</button>
             </form>
@@ -80,30 +85,25 @@
                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label asp-for="RoomId" class="form-label">Select Room</label>
-                        <select asp-for="RoomId" class="form-select">
-                            <option value="">-- Select a Room --</option>
-                            @if (Model.AvailableRooms != null)
-                            {
-                                @foreach (var item in Model.AvailableRooms)
-                                {
-                                    if (item.Value == Model.RoomId.ToString())
-                                    {
-                                        <option value="@item.Value" selected="selected">@item.Text</option>
+                        <label for="roomSelect" class="form-label">Select Rooms</label>
+                        @for (int i = 0; i < Model.Rooms; i++) {
+                            <div class="mb-3">
+                                <select name="RoomIds" class="form-select" aria-label="Select Room" required>
+                                    <option value="" disabled selected>Select a room</option>
+                                    @foreach (var room in Model.AvailableRooms) {
+
+                                        <option value="@room.Value" >@room.Text</option>
                                     }
-                                    else
-                                    {
-                                        <option value="@item.Value">@item.Text</option>
-                                    }
-                                }
-                            }
-                        </select>
-                        <span asp-validation-for="RoomId" class="text-danger"></span>
-                        @if (Model.AvailableRooms == null || !Model.AvailableRooms.Any())
-                        {
+                                </select>
+                                <span asp-validation-for="RoomIds" class="text-danger"></span>
+                            </div>
+                        }
+
+                        @if (Model.AvailableRooms == null || !Model.AvailableRooms.Any()) {
                             <div class="text-danger mt-2">No rooms are available for the selected dates and number of guests.</div>
                         }
                     </div>
+
                 </div>
 
                 <div class="row">
@@ -154,7 +154,8 @@
         var reservationOptions = {
             "No": [
                 { value: "Individual Day Retreat", text: "Individual Day Retreat" },
-                { value: "Group Retreat (One-Day)", text: "Group Retreat (One-Day)" }
+                { value: "Group Retreat (One-Day)", text: "Group Retreat (One-Day)" },
+                { value: "High Schools", text: "High School Field Trip"} 
             ],
             "With": [
                 { value: "Individual Overnight Retreat", text: "Individual Overnight Retreat" },
@@ -225,5 +226,6 @@
                 }
             });
         });
+
     </script>
 }

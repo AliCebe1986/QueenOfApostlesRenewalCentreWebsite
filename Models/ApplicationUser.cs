@@ -12,6 +12,8 @@ namespace QueenOfApostlesRenewalCentre.Models
         [Required]
         public string Surname { get; set; }
 
+        public bool loyalty { get; set; } = false;
+
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
     }
 }

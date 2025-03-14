@@ -14,14 +14,13 @@
 
     <div class="mb-3">
         <label class="form-label">Room</label>
-        <select asp-for="RoomId" class="form-select">
-            <option value="">Select Room</option>
-            @foreach (var room in (List<QueenOfApostlesRenewalCentre.Models.Room>)ViewData["Rooms"])
-            {
-                <option value="@room.RoomId">@room.Name (Capacity: @room.Capacity)</option>
+        <<label for="RoomIds">Select Rooms</label>
+        <select asp-for="RoomIds" class="form-control" multiple>
+            @foreach (var room in ViewData["Rooms"] as List<Room>) {
+                <option value="@room.RoomId">@room.Name - Room #@room.RoomNumber</option>
             }
         </select>
-        <span asp-validation-for="RoomId" class="text-danger"></span>
+        <span asp-validation-for="RoomIds" class="text-danger"></span>
     </div>
 
     <div class="mb-3">

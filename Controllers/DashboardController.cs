@@ -20,23 +20,21 @@ namespace QueenOfApostlesRenewalCentre.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
-        {
-            
+        public async Task<IActionResult> Index() {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            
+            // Get bookings and include related rooms
             var userBookings = await _context.Bookings
-                                    .Include(b => b.Room)
-                                    .Where(b => b.UserId == userId)
-                                    .ToListAsync();
+                                              .Include(b => b.Rooms) // Include all rooms associated with the booking
+                                              .Where(b => b.UserId == userId)
+                                              .ToListAsync();
 
-            
+            // Filter for upcoming and past bookings
             var upcoming = userBookings.Where(b => b.StartDate > DateTime.Now).ToList();
             var past = userBookings.Where(b => b.EndDate < DateTime.Now).ToList();
 
-            var viewModel = new UserDashboardViewModel
-            {
+            // Create ViewModel with upcoming and past bookings
+            var viewModel = new UserDashboardViewModel {
                 UpcomingReservations = upcoming,
                 PastReservations = past
             };
@@ -44,36 +42,36 @@ namespace QueenOfApostlesRenewalCentre.Controllers
             return View(viewModel);
         }
 
-        
+
+
+
         [HttpPost]
-        public async Task<IActionResult> Cancel(int id)
-        {
-            var booking = await _context.Bookings.FindAsync(id);
-            if (booking == null)
-            {
+        public async Task<IActionResult> Cancel(int id) {
+            var booking = await _context.Bookings
+                                         .Include(b => b.Rooms) // Ensure rooms are included
+                                         .FirstOrDefaultAsync(b => b.BookingId == id);
+
+            if (booking == null) {
                 return NotFound();
             }
 
-            
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (booking.UserId != userId)
-            {
+            if (booking.UserId != userId) {
                 return Unauthorized();
             }
 
-            
-            if (booking.StartDate <= DateTime.Now)
-            {
-                TempData["ErrorMessage"] = "Geçmiş rezervasyonlar iptal edilemez.";
+            // Prevent cancellation if the booking start date has passed
+            if (booking.StartDate <= DateTime.Now) {
+                TempData["ErrorMessage"] = "Previous reservation cannot be cancelled.";
                 return RedirectToAction(nameof(Index));
             }
 
-            
+            // Change the booking status to "Cancelled"
             booking.Status = "Cancelled";
             _context.Update(booking);
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Rezervasyon başarıyla iptal edildi.";
+            TempData["SuccessMessage"] = "The reservation was cancelled successfully.";
             return RedirectToAction(nameof(Index));
         }
     }

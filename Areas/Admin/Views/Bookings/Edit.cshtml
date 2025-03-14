@@ -3,8 +3,9 @@
 @{
     ViewData["Title"] = "Edit Booking";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-    // Create a SelectList variable from ViewBag.Rooms, using RoomId as the value, Name as the text, and pre-select Model.RoomId
-    var roomList = new SelectList(ViewBag.Rooms, "RoomId", "Name", Model.RoomId);
+
+    // Create a SelectList variable from ViewBag.Rooms, using RoomId as the value, Name as the text.
+    var roomList = new SelectList(ViewBag.Rooms, "RoomId", "Name", Model.Rooms.Select(r => r.RoomId).ToArray()); // Assuming Model.Rooms is a collection of booked rooms.
 }
 
 <h2>Edit Booking</h2>
@@ -20,11 +21,11 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="RoomId" class="form-label">Select Room</label>
-        <select asp-for="RoomId" class="form-select" asp-items="roomList">
-            <option value="">-- Select a Room --</option>
+        <label asp-for="Rooms" class="form-label">Select Rooms</label>
+        <select asp-for="Rooms" class="form-select" asp-items="roomList" multiple="multiple">
+            <option value="">-- Select Rooms --</option>
         </select>
-        <span asp-validation-for="RoomId" class="text-danger"></span>
+        <span asp-validation-for="Rooms" class="text-danger"></span>
     </div>
 
     <div class="mb-3">

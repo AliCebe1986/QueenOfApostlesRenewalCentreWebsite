@@ -42,7 +42,7 @@ namespace QueenOfApostlesRenewalCentre.Models
 
         [Required]
         [Display(Name = "Select Room")]
-        public int RoomId { get; set; }
+        public List<int> RoomIds { get; set; } = new List<int>();
 
         public IEnumerable<SelectListItem> AvailableRooms { get; set; } = new List<SelectListItem>();
 

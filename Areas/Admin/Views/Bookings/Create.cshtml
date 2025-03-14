@@ -19,11 +19,11 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="RoomId" class="form-label">Select Room</label>
-        <select asp-for="RoomId" class="form-select" asp-items="roomList">
-            <option value="">-- Select a Room --</option>
+        <label class="form-label">Select Rooms</label>
+        <select asp-for="RoomIds" class="form-select" asp-items="roomList" multiple="multiple">
+            <option value="">-- Select Rooms --</option>
         </select>
-        <span asp-validation-for="RoomId" class="text-danger"></span>
+        <span asp-validation-for="RoomIds" class="text-danger"></span>
     </div>
 
     <div class="mb-3">

@@ -14,15 +14,14 @@ namespace QueenOfApostlesRenewalCentre.Models
 
         [Required]
         [EmailAddress]
-        public string Email { get; set; } = ""; // Default değer eklendi
+        public string Email { get; set; } = ""; 
 
         [Phone]
-        public string? PhoneNumber { get; set; } // Nullable yapıldı
+        public string? PhoneNumber { get; set; }
+      
+        public List<int> RoomIds { get; set; } = new List<int>();
 
-        [ForeignKey("Room")]
-        public int RoomId { get; set; }
-
-        public Room? Room { get; set; }
+        public ICollection<Room> Rooms { get; set; } = new List<Room>();
 
         [DataType(DataType.DateTime)]
         public DateTime StartDate { get; set; }
@@ -34,13 +33,13 @@ namespace QueenOfApostlesRenewalCentre.Models
         public int GuestCount { get; set; } = 1;
 
         // "Confirmed", "Pending", "Cancelled"
-        public string Status { get; set; } = "Pending"; // Default değer eklendi
+        public string Status { get; set; } = "Pending"; 
 
-        public string ReservationType { get; set; } = ""; // Default değer eklendi
+        public string ReservationType { get; set; } = ""; 
 
-        public string? SpecialRequests { get; set; } // Nullable yapıldı
+        public string? SpecialRequests { get; set; } 
 
-        public string? UserId { get; set; } // Nullable yapıldı
+        public string? UserId { get; set; } 
 
         [DataType(DataType.DateTime)]
         public DateTime BookingDate { get; set; } = DateTime.Now;

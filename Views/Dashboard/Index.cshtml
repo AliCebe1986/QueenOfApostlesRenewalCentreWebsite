@@ -5,27 +5,24 @@
 
 <h2>My Dashboard</h2>
 
-@if (TempData["SuccessMessage"] != null)
-{
+@if (TempData["SuccessMessage"] != null) {
     <div class="alert alert-success">
         @TempData["SuccessMessage"]
     </div>
 }
 
-@if (TempData["ErrorMessage"] != null)
-{
+@if (TempData["ErrorMessage"] != null) {
     <div class="alert alert-danger">
         @TempData["ErrorMessage"]
     </div>
 }
 
 <h3>Upcoming Reservations</h3>
-@if (Model.UpcomingReservations.Any())
-{
+@if (Model.UpcomingReservations.Any()) {
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Room</th>
+                <th>Rooms</th> <!-- Updated to account for multiple rooms -->
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Reservation Type</th>
@@ -34,17 +31,25 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var booking in Model.UpcomingReservations)
-            {
+            @foreach (var booking in Model.UpcomingReservations) {
                 <tr>
-                    <td>@booking.Room?.Name</td>
+                    <td>
+                        @if (booking.Rooms != null && booking.Rooms.Any()) {
+                            <ul class="mb-0">
+                                @foreach (var room in booking.Rooms) {
+                                    <li>@room.Name (Room #@room.RoomNumber)</li>
+                                }
+                            </ul>
+                        } else {
+                            <span class="text-muted">No rooms available</span>
+                        }
+                    </td>
                     <td>@booking.StartDate.ToString("g")</td>
                     <td>@booking.EndDate.ToString("g")</td>
                     <td>@booking.ReservationType</td>
                     <td>@booking.Status</td>
                     <td>
-                        @if (booking.Status != "Cancelled")
-                        {
+                        @if (booking.Status != "Cancelled") {
                             <form asp-action="Cancel" method="post" style="display:inline;">
                                 <input type="hidden" name="id" value="@booking.BookingId" />
                                 <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
@@ -55,19 +60,16 @@
             }
         </tbody>
     </table>
-}
-else
-{
+} else {
     <p>No upcoming reservations found.</p>
 }
 
 <h3>Past Reservations</h3>
-@if (Model.PastReservations.Any())
-{
+@if (Model.PastReservations.Any()) {
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Room</th>
+                <th>Rooms</th> <!-- Updated to account for multiple rooms -->
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Reservation Type</th>
@@ -75,10 +77,19 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var booking in Model.PastReservations)
-            {
+            @foreach (var booking in Model.PastReservations) {
                 <tr>
-                    <td>@booking.Room?.Name</td>
+                    <td>
+                        @if (booking.Rooms != null && booking.Rooms.Any()) {
+                            <ul class="mb-0">
+                                @foreach (var room in booking.Rooms) {
+                                    <li>@room.Name (Room #@room.RoomNumber)</li>
+                                }
+                            </ul>
+                        } else {
+                            <span class="text-muted">No rooms available</span>
+                        }
+                    </td>
                     <td>@booking.StartDate.ToString("g")</td>
                     <td>@booking.EndDate.ToString("g")</td>
                     <td>@booking.ReservationType</td>
@@ -87,8 +98,6 @@ else
             }
         </tbody>
     </table>
-}
-else
-{
+} else {
     <p>No past reservations found.</p>
 }

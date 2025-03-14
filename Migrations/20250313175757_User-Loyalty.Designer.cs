@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QueenOfApostlesRenewalCentre.Data;
 
@@ -11,9 +12,11 @@ using QueenOfApostlesRenewalCentre.Data;
 namespace QueenOfApostlesRenewalCentre.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250313175757_User-Loyalty")]
+    partial class UserLoyalty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -270,9 +273,8 @@ namespace QueenOfApostlesRenewalCentre.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RoomIds")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int");
 
                     b.Property<string>("SpecialRequests")
                         .HasColumnType("nvarchar(max)");
@@ -288,6 +290,8 @@ namespace QueenOfApostlesRenewalCentre.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("BookingId");
+
+                    b.HasIndex("RoomId");
 
                     b.ToTable("Bookings");
                 });
@@ -317,40 +321,19 @@ namespace QueenOfApostlesRenewalCentre.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InvoiceId"));
 
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
                     b.Property<int>("BookingId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("BreakfastCost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("DinnerCost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("DirectorsDiscount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("DueDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("IssuedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("LunchCost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("PremisesUseCost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("RoomCost")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("TotalAmount")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
 
                     b.HasKey("InvoiceId");
 
@@ -427,9 +410,6 @@ namespace QueenOfApostlesRenewalCentre.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoomId"));
 
-                    b.Property<int?>("BookingId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
@@ -452,8 +432,6 @@ namespace QueenOfApostlesRenewalCentre.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("RoomId");
-
-                    b.HasIndex("BookingId");
 
                     b.ToTable("Rooms");
 
@@ -1303,6 +1281,17 @@ namespace QueenOfApostlesRenewalCentre.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("QueenOfApostlesRenewalCentre.Models.Booking", b =>
+                {
+                    b.HasOne("QueenOfApostlesRenewalCentre.Models.Room", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
+                });
+
             modelBuilder.Entity("QueenOfApostlesRenewalCentre.Models.Invoice", b =>
                 {
                     b.HasOne("QueenOfApostlesRenewalCentre.Models.Booking", "Booking")
@@ -1325,13 +1314,6 @@ namespace QueenOfApostlesRenewalCentre.Migrations
                     b.Navigation("Invoice");
                 });
 
-            modelBuilder.Entity("QueenOfApostlesRenewalCentre.Models.Room", b =>
-                {
-                    b.HasOne("QueenOfApostlesRenewalCentre.Models.Booking", null)
-                        .WithMany("Rooms")
-                        .HasForeignKey("BookingId");
-                });
-
             modelBuilder.Entity("QueenOfApostlesRenewalCentre.Models.StaffTask", b =>
                 {
                     b.HasOne("QueenOfApostlesRenewalCentre.Models.ApplicationUser", "Staff")
@@ -1341,11 +1323,6 @@ namespace QueenOfApostlesRenewalCentre.Migrations
                         .IsRequired();
 
                     b.Navigation("Staff");
-                });
-
-            modelBuilder.Entity("QueenOfApostlesRenewalCentre.Models.Booking", b =>
-                {
-                    b.Navigation("Rooms");
                 });
 #pragma warning restore 612, 618
         }

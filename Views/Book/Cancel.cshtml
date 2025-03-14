@@ -25,17 +25,17 @@
                         <div class="col-md-6">
                             <p><strong>Booking Reference:</strong> #@Model.BookingId</p>
                             <p><strong>Guest Name:</strong> @Model.GuestName</p>
-                            <p>
-                                <strong>Room:</strong>
-                                @if (Model.Room != null)
-                                {
-                                    @Model.Room.Name
-                                }
-                                else
-                                {
-                                    <span class="text-muted">Room details not available</span>
-                                }
-                            </p>
+
+                            @if (Model.Rooms != null && Model.Rooms.Any()) {
+                                <p><strong>Rooms:</strong></p>
+                                <ul>
+                                    @foreach (var room in Model.Rooms) {
+                                        <li>@room.Name (@room.RoomNumber)</li>
+                                    }
+                                </ul>
+                            } else {
+                                <p><strong>Rooms:</strong> <span class="text-muted">Room details not available</span></p>
+                            }
                         </div>
                         <div class="col-md-6">
                             <p><strong>Check-in Date:</strong> @Model.StartDate.ToShortDateString()</p>

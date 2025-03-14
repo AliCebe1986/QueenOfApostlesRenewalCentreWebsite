@@ -21,14 +21,15 @@ namespace QueenOfApostlesRenewalCentre.Data
         public DbSet<RoomCleaning> RoomCleanings { get; set; }
         public DbSet<News> News { get; set; }
 
+        public DbSet<ConferenceRoom> ConferenceRooms { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Fiyat bilgilerinin hassasiyet ve ölçek tanımlarını ayarlayın
-            // Toplam 10 basamak, bunun 2'si ondalık basamak (örn: 12345678.90)
+          
             modelBuilder.Entity<Invoice>()
-                .Property(i => i.Amount)
+                .Property(i => i.TotalAmount)
                 .HasPrecision(10, 2);
 
             modelBuilder.Entity<Payment>()
@@ -39,33 +40,33 @@ namespace QueenOfApostlesRenewalCentre.Data
             modelBuilder.Entity<Room>().HasData(
                 new Room { RoomId = 1, RoomNumber = "1", Name = "Room 1", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
                 new Room { RoomId = 2, RoomNumber = "2", Name = "Room 2", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 3, RoomNumber = "3", Name = "Room 3", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 4, RoomNumber = "4", Name = "Room 4", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 5, RoomNumber = "5", Name = "Room 5", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 6, RoomNumber = "6", Name = "Room 6", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 7, RoomNumber = "7", Name = "Room 7", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 8, RoomNumber = "8", Name = "Room 8", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 9, RoomNumber = "9", Name = "Room 9", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 10, RoomNumber = "10", Name = "Room 10", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 11, RoomNumber = "11", Name = "Room 11", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 12, RoomNumber = "12", Name = "Room 12", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 13, RoomNumber = "13", Name = "Room 13", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 14, RoomNumber = "14", Name = "Room 14", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 15, RoomNumber = "15", Name = "Room 15", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 16, RoomNumber = "16", Name = "Room 16", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 17, RoomNumber = "17", Name = "Room 17", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 18, RoomNumber = "18", Name = "Room 18", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 19, RoomNumber = "19", Name = "Room 19", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 20, RoomNumber = "20", Name = "Room 20", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 21, RoomNumber = "21", Name = "Room 21", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 22, RoomNumber = "22", Name = "Room 22", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 23, RoomNumber = "23", Name = "Room 23", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 24, RoomNumber = "24", Name = "Room 24", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 25, RoomNumber = "25", Name = "Room 25", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 26, RoomNumber = "26", Name = "Room 26", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 27, RoomNumber = "27", Name = "Room 27", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 28, RoomNumber = "28", Name = "Room 28", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
-                new Room { RoomId = 29, RoomNumber = "29", Name = "Room 29", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
+                new Room { RoomId = 3, RoomNumber = "3", Name = "Room 3", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 4, RoomNumber = "4", Name = "Room 4", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 5, RoomNumber = "5", Name = "Room 5", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 6, RoomNumber = "6", Name = "Room 6", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 7, RoomNumber = "7", Name = "Room 7", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 8, RoomNumber = "8", Name = "Room 8", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 9, RoomNumber = "9", Name = "Room 9", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 10, RoomNumber = "10", Name = "Room 10", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 11, RoomNumber = "11", Name = "Room 11", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 12, RoomNumber = "12", Name = "Room 12", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 13, RoomNumber = "13", Name = "Room 13", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 14, RoomNumber = "14", Name = "Room 14", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 15, RoomNumber = "15", Name = "Room 15", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 16, RoomNumber = "16", Name = "Room 16", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 17, RoomNumber = "17", Name = "Room 17", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 18, RoomNumber = "18", Name = "Room 18", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 19, RoomNumber = "19", Name = "Room 19", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 20, RoomNumber = "20", Name = "Room 20", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 21, RoomNumber = "21", Name = "Room 21", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 22, RoomNumber = "22", Name = "Room 22", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 23, RoomNumber = "23", Name = "Room 23", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 24, RoomNumber = "24", Name = "Room 24", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 25, RoomNumber = "25", Name = "Room 25", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 26, RoomNumber = "26", Name = "Room 26", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 27, RoomNumber = "27", Name = "Room 27", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 28, RoomNumber = "28", Name = "Room 28", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
+                new Room { RoomId = 29, RoomNumber = "29", Name = "Room 29", Capacity = 2, Type = "Standard", WithShower = false, IsReserved = false },
                 new Room { RoomId = 30, RoomNumber = "30", Name = "Room 30", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
                 new Room { RoomId = 31, RoomNumber = "31", Name = "Room 31", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },
                 new Room { RoomId = 32, RoomNumber = "32", Name = "Room 32", Capacity = 2, Type = "Standard", WithShower = true, IsReserved = false },

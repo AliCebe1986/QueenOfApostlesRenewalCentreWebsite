@@ -13,7 +13,7 @@
     <thead>
         <tr>
             <th>Guest Name</th>
-            <th>Room</th>
+            <th>Rooms</th> <!-- Updated from "Room" to "Rooms" -->
             <th>Arrival</th>
             <th>Departure</th>
             <th>Status</th>
@@ -22,11 +22,20 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var booking in Model)
-        {
+        @foreach (var booking in Model) {
             <tr>
                 <td>@booking.GuestName</td>
-                <td>@booking.Room?.Name</td>
+                <td>
+                    @if (booking.Rooms != null && booking.Rooms.Any()) {
+                        <ul class="mb-0">
+                            @foreach (var room in booking.Rooms) {
+                                <li>@room.Name (Room #@room.RoomNumber)</li>
+                            }
+                        </ul>
+                    } else {
+                        <span class="text-muted">Room details not available</span>
+                    }
+                </td>
                 <td>@booking.StartDate.ToShortDateString()</td>
                 <td>@booking.EndDate.ToShortDateString()</td>
                 <td>@booking.Status</td>
