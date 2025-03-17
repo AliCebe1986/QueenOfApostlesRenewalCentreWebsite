@@ -25,9 +25,18 @@ namespace QueenOfApostlesRenewalCentre.Controllers
 
             // Get bookings and include related rooms
             var userBookings = await _context.Bookings
-                                              .Include(b => b.Rooms) // Include all rooms associated with the booking
                                               .Where(b => b.UserId == userId)
                                               .ToListAsync();
+
+            var allRoomIds = userBookings.SelectMany(b => b.RoomIds).Distinct().ToList();
+
+            var allRooms = await _context.Rooms
+                            .Where(r => allRoomIds.Contains(r.RoomId))
+                            .ToListAsync();
+
+            foreach (var booking in userBookings) {
+                booking.Rooms = allRooms.Where(r => booking.RoomIds.Contains(r.RoomId)).ToList();
+            }
 
             // Filter for upcoming and past bookings
             var upcoming = userBookings.Where(b => b.StartDate > DateTime.Now).ToList();
@@ -48,7 +57,6 @@ namespace QueenOfApostlesRenewalCentre.Controllers
         [HttpPost]
         public async Task<IActionResult> Cancel(int id) {
             var booking = await _context.Bookings
-                                         .Include(b => b.Rooms) // Ensure rooms are included
                                          .FirstOrDefaultAsync(b => b.BookingId == id);
 
             if (booking == null) {

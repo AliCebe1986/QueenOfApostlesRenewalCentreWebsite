@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Select Booking Type";
+}
+
+<div class="container mt-5 text-center">
+    <h2>Choose Your Booking Type</h2>
+
+    @if (TempData["ErrorMessage"] != null) {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    <form asp-action="HandleBookingType" method="post">
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <button type="submit" name="bookingType" value="With" class="btn btn-success w-100">
+                    Overnight Booking
+                </button>
+            </div>
+            <div class="col-md-6">
+                <button type="submit" name="bookingType" value="No" class="btn btn-primary w-100">
+                    No Overnight Booking
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

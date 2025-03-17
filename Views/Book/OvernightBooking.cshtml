@@ -1,0 +1,190 @@
+﻿@model QueenOfApostlesRenewalCentre.Models.BookViewModel
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Overnight Booking</h2>
+
+    <form asp-action="CreateInvoice" method="post" onsubmit="return validateForm()">
+        <input type="hidden" asp-for="OvernightOption" value="With" />
+
+        <!-- Arrival Date -->
+        <div class="mb-3">
+            <label for="arrival" class="form-label">Arrival Date</label>
+            <input type="date" id="arrival" asp-for="Arrival" class="form-control" required min="@DateTime.Today.ToString("yyyy-MM-dd")"  />
+            <span class="text-danger" asp-validation-for="Arrival"></span>
+        </div>
+
+        <!-- Departure Date -->
+        <div class="mb-3">
+            <label for="departure" class="form-label">Departure Date</label>
+            <input type="date" id="departure" asp-for="Departure" class="form-control" required min="@DateTime.Today.ToString("yyyy-MM-dd")"  />
+            <span class="text-danger" asp-validation-for="Departure"></span>
+        </div>
+
+        <!-- Number of Guests -->
+        <div class="mb-3">
+            <label for="guests" class="form-label">Number of Guests</label>
+            <input type="number" id="guests" asp-for="Guests" class="form-control" min="1" required />
+            <span class="text-danger" asp-validation-for="Guests"></span>
+        </div>
+
+        <!-- Number of Rooms -->
+        <div class="mb-3">
+            <label for="rooms" class="form-label">Number of Rooms</label>
+            <input type="number" id="rooms" asp-for="Rooms" class="form-control" min="1" required onchange="fetchAvailableRooms()" />
+            <span class="text-danger" asp-validation-for="Rooms"></span>
+        </div>
+
+        <!-- Dynamic Room Selection -->
+        <div id="roomSelectionContainer" class="mb-3"></div>
+
+        <div class="mb-3">
+            <label for="guestName">Guest Name</label>
+            <input type="text" id="guestName" name="GuestName" class="form-control" asp-for="GuestName" required />
+        </div>
+
+        <!-- Phone Number -->
+        <div class="mb-3">
+            <label for="phone" class="form-label">Phone Number</label>
+            <input type="tel" id="phone" asp-for="PhoneNumber" class="form-control"
+                   pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                   placeholder="123-456-7890"
+                   required />
+            <span class="text-danger" asp-validation-for="PhoneNumber"></span>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" asp-for="Email" class="form-control" required />
+            <span class="text-danger" asp-validation-for="Email"></span>
+        </div>
+
+        <!-- Reservation Type -->
+        <div class="mb-3">
+            <label for="reservationType" class="form-label">Reservation Type</label>
+            <select id="reservationType" asp-for="ReservationType" class="form-select" required>
+                <option value="">-- Select Reservation Type --</option>
+                <option value="Individual">Individual</option>
+                <option value="Groups">Groups</option>
+                <option value="Engaged Encounter">Engaged Encounter</option>
+                <option value="Married Couple">Married Couple</option>
+                <option value="Student">Student</option>
+                <option value="Sister">Sister</option>
+                <option value="Oblate">Oblate</option>
+                <option value="Clergy">Clergy</option>
+            </select>
+            <span class="text-danger" asp-validation-for="ReservationType"></span>
+        </div>
+
+        <!-- Special Requests -->
+        <div class="mb-3">
+            <label for="specialRequests" class="form-label">Special Requests (Optional)</label>
+            <textarea id="specialRequests" asp-for="SpecialRequests" class="form-control"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">Confirm Overnight Booking</button>
+    </form>
+</div>
+
+<script>
+    let availableRooms = [];
+
+    // Fetch available rooms based on the selected date and guest count
+    async function fetchAvailableRooms() {
+        const arrival = document.getElementById("arrival").value;
+        const departure = document.getElementById("departure").value;
+        const guests = document.getElementById("guests").value;
+
+        if (!arrival || !departure || !guests) return;
+
+        try {
+            const response = await fetch(`/Book/CheckAvailability?arrival=${arrival}&departure=${departure}&guests=${guests}`);
+            const roomSelectionContainer = document.getElementById("roomSelectionContainer");
+            roomSelectionContainer.innerHTML = ""; // Clear previous selections
+
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                roomSelectionContainer.innerHTML = `<p class="text-danger">${errorMessage}</p>`;
+                return;
+            }
+
+            // Store fetched rooms globally and generate room selectors
+            availableRooms = await response.json();
+            generateRoomSelectors();
+        } catch (error) {
+            console.error("Error fetching available rooms:", error);
+            document.getElementById("roomSelectionContainer").innerHTML = `<p class="text-danger">Failed to fetch available rooms.</p>`;
+        }
+    }
+
+    function generateRoomSelectors() {
+        const roomCount = parseInt(document.getElementById("rooms").value) || 0;
+        const roomSelectionContainer = document.getElementById("roomSelectionContainer");
+
+        roomSelectionContainer.innerHTML = ""; // Clear previous entries
+
+        for (let i = 1; i <= roomCount; i++) {
+            const roomDiv = document.createElement("div");
+            roomDiv.className = "mb-3";
+
+            const label = document.createElement("label");
+            label.className = "form-label";
+            label.innerText = `Room ${i}`;
+
+            const select = document.createElement("select");
+            select.className = "form-select";
+            select.name = `RoomIds[]`;
+            select.required = true;
+
+            // Default option
+            const defaultOption = document.createElement("option");
+            defaultOption.value = "";
+            defaultOption.text = "-- Select Room --";
+            select.appendChild(defaultOption);
+
+            // Populate room options
+            availableRooms.forEach(room => {
+                const option = document.createElement("option");
+                option.value = room.value;
+                option.textContent = room.text;
+                select.appendChild(option);
+            });
+
+            roomDiv.appendChild(label);
+            roomDiv.appendChild(select);
+            roomSelectionContainer.appendChild(roomDiv);
+        }
+    }
+
+    // Validate form before submission
+    function validateForm() {
+        const rooms = document.getElementById("rooms").value;
+        if (rooms < 1) {
+            alert("Please select at least one room.");
+            return false;
+        }
+        return true;
+    }
+
+    // Attach event listeners to auto-fetch room data
+    document.getElementById("arrival").addEventListener("change", fetchAvailableRooms);
+    document.getElementById("departure").addEventListener("change", fetchAvailableRooms);
+    document.getElementById("guests").addEventListener("input", fetchAvailableRooms);
+    document.getElementById("rooms").addEventListener("input", generateRoomSelectors);
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+
+        const arrivalInput = document.getElementById('arrival'); 
+        const departureInput = document.getElementById('departure'); 
+
+        if (arrivalInput) {
+            arrivalInput.value = today; // Set today's date as the default
+        }
+
+        if (departureInput) {
+            departureInput.value = today; // Set today's date as the default
+        }
+    });
+
+</script>

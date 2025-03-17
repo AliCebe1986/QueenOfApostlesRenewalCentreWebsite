@@ -1,0 +1,143 @@
+﻿@model QueenOfApostlesRenewalCentre.Models.InvoiceViewModel
+
+<div class="container mt-5">
+    <h2 class="text-center">Booking Confirmation</h2>
+    <p class="text-center">Thank you for your reservation! Below are your reservation details and price breakdown.</p>
+
+    <h3>Reservation Details</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Detail</th>
+                <th>Information</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Reservation Type:</strong></td>
+                <td>@Model.Booking.ReservationType</td>
+            </tr>
+            <tr>
+                <td><strong>Guest Name:</strong></td>
+                <td>@Model.Booking.GuestName</td>
+            </tr>
+            <tr>
+                <td><strong>Email:</strong></td>
+                <td>@Model.Booking.Email</td>
+            </tr>
+            <tr>
+                <td><strong>Phone Number:</strong></td>
+                <td>@Model.Booking.PhoneNumber</td>
+            </tr>
+            <tr>
+                <td><strong>Arrival Date:</strong></td>
+                <td>@Model.Booking.Arrival.ToString("yyyy-MM-dd")</td>
+            </tr>
+            <tr>
+                <td><strong>Special Requests:</strong></td>
+                <td>@Model.Booking.SpecialRequests</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Price Breakdown</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>DESCRIPTION</th>
+                <th>Price</th>
+                <th># of Days</th>
+                <th># of People</th>
+                <th>TOTAL</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Room</td>
+                <td>@Model.RoomCost.ToString("C")</td>
+                <td>@((Model.Booking.Departure - Model.Booking.Arrival).Days)</td>
+                <td>@Model.Booking.Guests</td>
+                <td>@Model.RoomCost.ToString("C")</td>
+            </tr>
+            <tr>
+                <td>Breakfast</td>
+                <td>@Model.BreakfastCost.ToString("C")</td>
+                <td>@((Model.Booking.Departure - Model.Booking.Arrival).Days)</td>
+                <td>@Model.Booking.Guests</td>
+                <td>@Model.BreakfastCost.ToString("C")</td>
+            </tr>
+            <tr>
+                <td>Lunch</td>
+                <td>@Model.LunchCost.ToString("C")</td>
+                <td>@((Model.Booking.Departure - Model.Booking.Arrival).Days)</td>
+                <td>@Model.Booking.Guests</td>
+                <td>@Model.LunchCost.ToString("C")</td>
+            </tr>
+            <tr>
+                <td>Dinner</td>
+                <td>@Model.DinnerCost.ToString("C")</td>
+                <td>@((Model.Booking.Departure - Model.Booking.Arrival).Days)</td>
+                <td>@Model.Booking.Guests</td>
+                <td>@Model.DinnerCost.ToString("C")</td>
+            </tr>
+            <tr>
+                <td>Premises Use</td>
+                <td>@Model.PremisesUseCost.ToString("C")</td>
+                <td>@((Model.Booking.Departure - Model.Booking.Arrival).Days)</td>
+                <td>@Model.Booking.Guests</td>
+                <td>@Model.PremisesUseCost.ToString("C")</td>
+            </tr>
+            <tr>
+                <td>Director's Discount</td>
+                <td>-$</td>
+                <td>@((Model.Booking.Departure - Model.Booking.Arrival).Days)</td>
+                <td>@Model.Booking.Guests</td>
+                <td>@Model.DirectorsDiscount.ToString("C")</td>
+            </tr>
+            <tr>
+                <td><strong>Total Amount:</strong></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><strong>@Model.TotalAmount.ToString("C")</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h4>Status: @Model.Status</h4>
+    <h4>Invoice Date: @Model.IssuedDate.ToString("yyyy-MM-dd")</h4>
+    <h4>Due Date: @Model.DueDate.ToString("yyyy-MM-dd")</h4>
+
+    <div class="mt-4">
+        <!-- Go Back Button -->
+        <button onclick="window.history.back();" class="btn btn-primary">Go Back</button>
+
+        <!-- Confirm Booking Button -->
+        <form asp-action="Index" method="post" class="d-inline">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Booking.GuestName" />
+            <input type="hidden" asp-for="Booking.Email" />
+            <input type="hidden" asp-for="Booking.PhoneNumber" />
+            <input type="hidden" asp-for="Booking.Arrival" />
+            <input type="hidden" asp-for="Booking.Departure" />
+            <input type="hidden" asp-for="Booking.Guests" />
+            @foreach (var roomId in Model.Booking.RoomIds) {
+                <input type="hidden" name="Booking.RoomIds" value="@roomId" />
+            }
+            <input type="hidden" asp-for="Booking.ReservationType" />
+            <input type="hidden" asp-for="Booking.SpecialRequests" />
+            <input type="hidden" asp-for="TotalAmount" />
+            <input type="hidden" asp-for="RoomCost" />
+            <input type="hidden" asp-for="BreakfastCost" />
+            <input type="hidden" asp-for="LunchCost" />
+            <input type="hidden" asp-for="DinnerCost" />
+            <input type="hidden" asp-for="PremisesUseCost" />
+            <input type="hidden" asp-for="DirectorsDiscount" />
+            <input type="hidden" asp-for="Status" />
+            <input type="hidden" asp-for="IssuedDate" />
+            <input type="hidden" asp-for="DueDate" />
+
+            <button type="submit" class="btn btn-success">Confirm Booking</button>
+        </form>
+    </div>
+</div>

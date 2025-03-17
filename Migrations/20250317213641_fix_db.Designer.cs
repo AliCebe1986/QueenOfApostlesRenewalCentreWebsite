@@ -12,8 +12,8 @@ using QueenOfApostlesRenewalCentre.Data;
 namespace QueenOfApostlesRenewalCentre.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250314004908_AddMultipleRoomsSupport")]
-    partial class AddMultipleRoomsSupport
+    [Migration("20250317213641_fix_db")]
+    partial class fix_db
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -320,19 +320,40 @@ namespace QueenOfApostlesRenewalCentre.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InvoiceId"));
 
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
                     b.Property<int>("BookingId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("BreakfastCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("DinnerCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("DirectorsDiscount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("IssuedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal>("LunchCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("PremisesUseCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("RoomCost")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
                     b.HasKey("InvoiceId");
 
@@ -409,9 +430,6 @@ namespace QueenOfApostlesRenewalCentre.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoomId"));
 
-                    b.Property<int?>("BookingId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
@@ -434,8 +452,6 @@ namespace QueenOfApostlesRenewalCentre.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("RoomId");
-
-                    b.HasIndex("BookingId");
 
                     b.ToTable("Rooms");
 
@@ -1307,13 +1323,6 @@ namespace QueenOfApostlesRenewalCentre.Migrations
                     b.Navigation("Invoice");
                 });
 
-            modelBuilder.Entity("QueenOfApostlesRenewalCentre.Models.Room", b =>
-                {
-                    b.HasOne("QueenOfApostlesRenewalCentre.Models.Booking", null)
-                        .WithMany("Rooms")
-                        .HasForeignKey("BookingId");
-                });
-
             modelBuilder.Entity("QueenOfApostlesRenewalCentre.Models.StaffTask", b =>
                 {
                     b.HasOne("QueenOfApostlesRenewalCentre.Models.ApplicationUser", "Staff")
@@ -1323,11 +1332,6 @@ namespace QueenOfApostlesRenewalCentre.Migrations
                         .IsRequired();
 
                     b.Navigation("Staff");
-                });
-
-            modelBuilder.Entity("QueenOfApostlesRenewalCentre.Models.Booking", b =>
-                {
-                    b.Navigation("Rooms");
                 });
 #pragma warning restore 612, 618
         }

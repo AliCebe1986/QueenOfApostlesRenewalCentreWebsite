@@ -3,40 +3,15 @@
 @{
     ViewData["Title"] = "Home";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    // Output the login status as a lowercase string ("true" or "false")
     var isLoggedIn = User.Identity.IsAuthenticated.ToString().ToLower();
 }
-
-
 
 <!-- Book Now Widget -->
 <div class="container mt-5">
     <div class="card shadow">
-        <div class="card-body">
+        <div class="card-body text-center">
             <h4 class="card-title mb-4">Book Now</h4>
-            <form id="bookingForm">
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label for="arrival" class="form-label">Arrival</label>
-                        <input type="date" id="arrival" name="arrival" class="form-control" required>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="departure" class="form-label">Departure</label>
-                        <input type="date" id="departure" name="departure" class="form-control" required>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="rooms" class="form-label">Rooms</label>
-                        <input type="number" id="rooms" name="rooms" class="form-control" min="1" required>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="guests" class="form-label">Guests</label>
-                        <input type="number" id="guests" name="guests" class="form-control" min="1" required>
-                    </div>
-                    <div class="col-md-2 align-self-end">
-                        <button type="button" id="bookNowButton" class="btn btn-primary w-100">Book Now</button>
-                    </div>
-                </div>
-            </form>
+            <button type="button" id="bookNowButton" class="btn btn-primary w-50">Book Now</button>
         </div>
     </div>
 </div>
@@ -45,15 +20,16 @@
 <div class="container mt-5">
     <h2>Latest News</h2>
     <div class="row">
-        @foreach (var news in Model)
-        {
+        @foreach (var news in Model) {
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
                     <div class="card-header">
                         @news.Title
                     </div>
                     <div class="card-body">
-                        <p class="card-text">@((news.Content.Length > 100) ? news.Content.Substring(0, 100) + "..." : news.Content)</p>
+                        <p class="card-text">
+                            @((news.Content.Length > 100) ? news.Content.Substring(0, 100) + "..." : news.Content)
+                        </p>
                     </div>
                     <div class="card-footer text-end">
                         <small class="text-muted">Published: @news.PublishedDate.ToString("g")</small>
@@ -67,32 +43,17 @@
 
 @section Scripts {
     <script>
-        var isLoggedIn = "@isLoggedIn";
+        const isLoggedIn = "@isLoggedIn";
 
-                document.getElementById('bookNowButton').addEventListener('click', function () {
-            var arrival = document.getElementById('arrival').value;
-            var departure = document.getElementById('departure').value;
-            var rooms = document.getElementById('rooms').value;
-            var guests = document.getElementById('guests').value;
-
-            if (!arrival || !departure || !rooms || !guests) {
-                alert("Please fill in all fields.");
-                return;
-            }
-
+        document.getElementById('bookNowButton').addEventListener('click', function () {
             if (isLoggedIn !== "true") {
                 alert("You must be logged in to book.");
-                window.location.href = "/Account/Login?returnUrl=/Book";
+                window.location.href = "/Account/Login?returnUrl=/BookingSelection";
                 return;
             }
 
-            // We'll redirect to the booking form with these parameters,
-            // but RoomId will be selected on the booking form
-            var query = "?arrival=" + encodeURIComponent(arrival) +
-                "&departure=" + encodeURIComponent(departure) +
-                "&rooms=" + encodeURIComponent(rooms) +
-                "&guests=" + encodeURIComponent(guests);
-            window.location.href = "/Book" + query;
+            // Redirect to the new page for overnight choice
+            window.location.href = "/Book/SelectBookingType";
         });
     </script>
 }

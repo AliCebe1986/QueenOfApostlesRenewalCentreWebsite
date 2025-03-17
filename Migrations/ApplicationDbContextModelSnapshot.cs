@@ -427,9 +427,6 @@ namespace QueenOfApostlesRenewalCentre.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoomId"));
 
-                    b.Property<int?>("BookingId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
@@ -452,8 +449,6 @@ namespace QueenOfApostlesRenewalCentre.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("RoomId");
-
-                    b.HasIndex("BookingId");
 
                     b.ToTable("Rooms");
 
@@ -1325,13 +1320,6 @@ namespace QueenOfApostlesRenewalCentre.Migrations
                     b.Navigation("Invoice");
                 });
 
-            modelBuilder.Entity("QueenOfApostlesRenewalCentre.Models.Room", b =>
-                {
-                    b.HasOne("QueenOfApostlesRenewalCentre.Models.Booking", null)
-                        .WithMany("Rooms")
-                        .HasForeignKey("BookingId");
-                });
-
             modelBuilder.Entity("QueenOfApostlesRenewalCentre.Models.StaffTask", b =>
                 {
                     b.HasOne("QueenOfApostlesRenewalCentre.Models.ApplicationUser", "Staff")
@@ -1341,11 +1329,6 @@ namespace QueenOfApostlesRenewalCentre.Migrations
                         .IsRequired();
 
                     b.Navigation("Staff");
-                });
-
-            modelBuilder.Entity("QueenOfApostlesRenewalCentre.Models.Booking", b =>
-                {
-                    b.Navigation("Rooms");
                 });
 #pragma warning restore 612, 618
         }

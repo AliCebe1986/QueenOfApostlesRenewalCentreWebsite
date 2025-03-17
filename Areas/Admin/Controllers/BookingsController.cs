@@ -19,8 +19,20 @@ namespace QueenOfApostlesRenewalCentre.Areas.Admin.Controllers {
 
         // GET: Admin/Bookings
         public async Task<IActionResult> Index() {
-            var bookings = _context.Bookings.Include(b => b.Rooms); // Include Rooms in the query
-            return View(await bookings.ToListAsync());
+            var bookings = await _context.Bookings.ToListAsync();
+            
+            var allRoomIds = bookings.SelectMany(x => x.RoomIds).Distinct().ToList();
+
+            var allRooms = await _context.Rooms
+                .Where(r => allRoomIds.Contains(r.RoomId))
+                .ToListAsync();
+
+            foreach (var booking in bookings) {
+                booking.Rooms = allRooms.Where(r => booking.RoomIds.Contains(r.RoomId)).ToList();
+            }
+            
+            // Include Rooms in the query
+            return View(bookings);
         }
 
         // GET: Admin/Bookings/Details/5
@@ -29,11 +41,14 @@ namespace QueenOfApostlesRenewalCentre.Areas.Admin.Controllers {
                 return NotFound();
 
             var booking = await _context.Bookings
-                .Include(b => b.Rooms) // Include Rooms in the details view
                 .FirstOrDefaultAsync(m => m.BookingId == id);
 
             if (booking == null)
                 return NotFound();
+
+            booking.Rooms = await _context.Rooms
+                .Where(r => booking.RoomIds.Contains(r.RoomId))
+                .ToListAsync();
 
             return View(booking);
         }
@@ -51,7 +66,7 @@ namespace QueenOfApostlesRenewalCentre.Areas.Admin.Controllers {
         public async Task<IActionResult> Create([Bind("BookingId,GuestName,StartDate,EndDate,Status,ReservationType,UserId")] Booking booking, List<int> RoomIds) {
             if (ModelState.IsValid) {
                 // Get the rooms selected by the user from the RoomIds
-                booking.Rooms = _context.Rooms.Where(r => RoomIds.Contains(r.RoomId)).ToList();
+                booking.RoomIds = RoomIds ?? new List<int>();
 
                 _context.Add(booking);
                 await _context.SaveChangesAsync();
@@ -68,12 +83,14 @@ namespace QueenOfApostlesRenewalCentre.Areas.Admin.Controllers {
             if (id == null)
                 return NotFound();
 
-            var booking = await _context.Bookings
-                .Include(b => b.Rooms) // Include Rooms in the edit action
-                .FirstOrDefaultAsync(m => m.BookingId == id);
+            var booking = await _context.Bookings.FirstOrDefaultAsync(m => m.BookingId == id);
 
             if (booking == null)
                 return NotFound();
+
+            booking.Rooms = await _context.Rooms
+                .Where(r => booking.RoomIds.Contains(r.RoomId))
+                .ToListAsync();
 
             // Pass selected rooms to the view for multi-select dropdown
             ViewBag.Rooms = new SelectList(_context.Rooms, "RoomId", "Name", booking.Rooms.Select(r => r.RoomId).ToList());
@@ -113,12 +130,14 @@ namespace QueenOfApostlesRenewalCentre.Areas.Admin.Controllers {
             if (id == null)
                 return NotFound();
 
-            var booking = await _context.Bookings
-                .Include(b => b.Rooms) // Include Rooms in the delete action
-                .FirstOrDefaultAsync(m => m.BookingId == id);
+            var booking = await _context.Bookings.FirstOrDefaultAsync(m => m.BookingId == id);
 
             if (booking == null)
                 return NotFound();
+
+            booking.Rooms = await _context.Rooms
+                .Where(r => booking.RoomIds.Contains(r.RoomId))
+                .ToListAsync();
 
             return View(booking);
         }

@@ -21,7 +21,8 @@ namespace QueenOfApostlesRenewalCentre.Models
       
         public List<int> RoomIds { get; set; } = new List<int>();
 
-        public ICollection<Room> Rooms { get; set; } = new List<Room>();
+        [NotMapped]
+        public List<Room> Rooms { get; set; } = new List<Room>();
 
         [DataType(DataType.DateTime)]
         public DateTime StartDate { get; set; }

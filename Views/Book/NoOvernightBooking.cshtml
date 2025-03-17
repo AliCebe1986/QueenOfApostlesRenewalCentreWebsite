@@ -1,0 +1,85 @@
+﻿@model QueenOfApostlesRenewalCentre.Models.BookViewModel
+
+<div class="container mt-5">
+    <h2>No Overnight Booking</h2>
+    <form asp-action="CreateInvoice" method="post">
+        <input type="hidden" asp-for="OvernightOption" value="No" />
+
+        <!-- Reservation Type Dropdown -->
+        <div class="mb-3">
+            <label for="reservationType">Reservation Type</label>
+            <select id="reservationType" name="ReservationType" class="form-control" asp-for="ReservationType" required>
+                <option value="Individual">Individual</option>
+                <option value="HighSchool">High School</option>
+                <option value="DayGroup">Day Group</option>
+            </select>
+        </div>
+
+        <!-- Number of Guests Field (Conditionally displayed) -->
+        <div class="mb-3" id="guestsFieldContainer">
+            <label for="guests">Number of Guests</label>
+            <input type="number" id="guests" name="Guests" class="form-control" asp-for="Guests" min="1" value="@Model.Guests" required />
+        </div>
+
+        <!-- Phone Number Field -->
+        <div class="mb-3">
+            <label for="phoneNumber">Phone Number</label>
+            <input type="tel" id="phoneNumber" name="PhoneNumber" class="form-control" asp-for="PhoneNumber" pattern="^\+?[1-9]\d{1,14}$" placeholder="e.g., +1234567890" required title="Enter a valid phone number (e.g., +1234567890)" />
+        </div>
+
+        <!-- Email Field -->
+        <div class="mb-3">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="Email" class="form-control" asp-for="Email" required pattern="^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Enter a valid email address" />
+        </div>
+
+        <!-- Name Field -->
+        <div class="mb-3">
+            <label for="guestName">Guest Name</label>
+            <input type="text" id="guestName" name="GuestName" class="form-control" asp-for="GuestName" required />
+        </div>
+
+        <!-- Special Requests Text Area -->
+        <div class="mb-3">
+            <label for="specialRequests">Special Requests</label>
+            <textarea id="specialRequests" name="SpecialRequests" class="form-control" asp-for="SpecialRequests" rows="4"></textarea>
+        </div>
+
+        <!-- Arrival Date Field -->
+        <div class="mb-3">
+            <label for="arrival">Arrival Date</label>
+            <input type="date" id="arrival" name="Arrival" class="form-control" asp-for="Arrival" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Confirm No Overnight Booking</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        // Handle change in reservation type
+        document.getElementById('reservationType').addEventListener('change', function () {
+            var reservationType = this.value;
+            var guestsField = document.getElementById('guestsFieldContainer');
+            var guestsInput = document.getElementById('guests');
+
+            if (reservationType === 'Individual') {
+                guestsField.style.display = 'none';
+                guestsInput.value = 1; // Lock to 1 guest
+            } else {
+                guestsField.style.display = 'block'; // Show the field
+                guestsInput.disabled = false; // Enable input
+            }
+        });
+
+        // Trigger initial display logic
+        document.getElementById('reservationType').dispatchEvent(new Event('change'));
+
+        // Set today's date as the default value for the Arrival Date
+        document.addEventListener('DOMContentLoaded', function () {
+            const arrivalInput = document.getElementById('arrival');
+            const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+            arrivalInput.value = today; // Set the input field to today's date
+        });
+    </script>
+}
