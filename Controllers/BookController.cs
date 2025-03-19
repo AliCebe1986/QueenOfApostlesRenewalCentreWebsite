@@ -110,34 +110,38 @@ namespace QueenOfApostlesRenewalCentre.Controllers {
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(InvoiceViewModel model) {
 
-            if (model.Booking.Departure <= model.Booking.Arrival) {
-                ModelState.AddModelError("Departure", "Departure date must be later than arrival date.");
+           if(model.Booking.OvernightOption == "With") {
+                if (model.Booking.Departure <= model.Booking.Arrival) {
+                    ModelState.AddModelError("Departure", "Departure date must be later than arrival date.");
+                }
+
+
+
+                if (model.Booking.RoomIds == null || model.Booking.RoomIds.Count == 0) {
+                    ModelState.AddModelError("Rooms", "Please select at least one room.");
+                }
+
+                // Check room availability and capacity
+                var selectedRooms = await _context.Rooms
+                    .Where(r => model.Booking.RoomIds.Contains(r.RoomId))
+                    .ToListAsync();
+
+                if (selectedRooms.Count != model.Booking.RoomIds.Count) {
+                    ModelState.AddModelError("RoomIds", "One or more selected rooms are invalid.");
+                }
+
+                var totalCapacity = selectedRooms.Sum(r => r.Capacity);
+                if (totalCapacity < model.Booking.Guests) {
+                    ModelState.AddModelError("RoomIds", $"The selected rooms can only accommodate {totalCapacity} guests.");
+                }
             }
 
-            if (model.Booking.Guests <= 0) {
-                ModelState.AddModelError("Guests", "Number of guests must be at least 1.");
-            }
+                if (model.Booking.Guests <= 0) {
+                    ModelState.AddModelError("Guests", "Number of guests must be at least 1.");
+                }
 
-            if (model.Booking.RoomIds == null || model.Booking.RoomIds.Count == 0) {
-                ModelState.AddModelError("Rooms", "Please select at least one room.");
-            }
-
-            // Check room availability and capacity
-            var selectedRooms = await _context.Rooms
-                .Where(r => model.Booking.RoomIds.Contains(r.RoomId))
-                .ToListAsync();
-
-            if (selectedRooms.Count != model.Booking.RoomIds.Count) {
-                ModelState.AddModelError("RoomIds", "One or more selected rooms are invalid.");
-            }
-
-            var totalCapacity = selectedRooms.Sum(r => r.Capacity);
-            if (totalCapacity < model.Booking.Guests) {
-                ModelState.AddModelError("RoomIds", $"The selected rooms can only accommodate {totalCapacity} guests.");
-            }
-
-            // If validation fails, return to the correct view
-            if (!ModelState.IsValid) {
+                // If validation fails, return to the correct view
+                if (!ModelState.IsValid) {
                 model.Booking.AvailableRooms = await LoadAvailableRooms(model.Booking.Arrival, model.Booking.Departure, model.Booking.Guests);
 
                 if (model.Booking.OvernightOption == "With") {
@@ -300,6 +304,23 @@ namespace QueenOfApostlesRenewalCentre.Controllers {
             return RedirectToAction(nameof(MyBookings));
         }
 
+
+
+        [HttpGet("DownloadInvoice/{bookingId}")]
+        public async Task<IActionResult> DownloadInvoice(int bookingId) {
+
+            var invoice = await _context.Invoices.FirstOrDefaultAsync(i => i.BookingId == bookingId);
+
+            if (invoice == null) {
+                TempData["ErrorMessage"] = "No invoice found for this booking";
+                return RedirectToAction("MyBookings");
+            }
+
+            return RedirectToAction("Download", "Invoice", new { id = invoice.InvoiceId });
+
+        }
+
+
         // Helper methods
         private async Task<List<SelectListItem>> LoadAvailableRooms(DateTime arrival, DateTime departure, int guests) {
             try {
@@ -405,7 +426,7 @@ namespace QueenOfApostlesRenewalCentre.Controllers {
                     dinnerCost = 30.00m;
                 }
 
-               
+            
 
 
                 if (bookViewModel.OvernightOption != "No") {
@@ -434,7 +455,7 @@ namespace QueenOfApostlesRenewalCentre.Controllers {
 
                 decimal totalCost = roomCost + ((breakfastCost + lunchCost + dinnerCost + premisesUseCost) * bookViewModel.Guests);
 
-                Console.WriteLine(bookViewModel.RoomIds);
+           
 
 
                 var invoiceViewModel = new InvoiceViewModel {
@@ -453,7 +474,7 @@ namespace QueenOfApostlesRenewalCentre.Controllers {
 
                 };
 
-                Console.WriteLine(invoiceViewModel.Booking.RoomIds);
+            
 
                 return View("BookingConfirmation", invoiceViewModel);
             } else {

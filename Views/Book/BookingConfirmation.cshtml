@@ -55,42 +55,42 @@
             <tr>
                 <td>Room</td>
                 <td>@Model.RoomCost.ToString("C")</td>
-                <td>@((Model.Booking.Departure - Model.Booking.Arrival).Days)</td>
+                <td>@(Model.Booking.Departure != DateTime.MinValue ? (Model.Booking.Departure - Model.Booking.Arrival).Days : 1)</td>
                 <td>@Model.Booking.Guests</td>
                 <td>@Model.RoomCost.ToString("C")</td>
             </tr>
             <tr>
                 <td>Breakfast</td>
                 <td>@Model.BreakfastCost.ToString("C")</td>
-                <td>@((Model.Booking.Departure - Model.Booking.Arrival).Days)</td>
+                <td>@(Model.Booking.Departure != DateTime.MinValue ? (Model.Booking.Departure - Model.Booking.Arrival).Days : 1)</td>
                 <td>@Model.Booking.Guests</td>
                 <td>@Model.BreakfastCost.ToString("C")</td>
             </tr>
             <tr>
                 <td>Lunch</td>
                 <td>@Model.LunchCost.ToString("C")</td>
-                <td>@((Model.Booking.Departure - Model.Booking.Arrival).Days)</td>
+                <td>@(Model.Booking.Departure != DateTime.MinValue ? (Model.Booking.Departure - Model.Booking.Arrival).Days : 1)</td>
                 <td>@Model.Booking.Guests</td>
                 <td>@Model.LunchCost.ToString("C")</td>
             </tr>
             <tr>
                 <td>Dinner</td>
                 <td>@Model.DinnerCost.ToString("C")</td>
-                <td>@((Model.Booking.Departure - Model.Booking.Arrival).Days)</td>
+                <td>@(Model.Booking.Departure != DateTime.MinValue ? (Model.Booking.Departure - Model.Booking.Arrival).Days : 1)</td>
                 <td>@Model.Booking.Guests</td>
                 <td>@Model.DinnerCost.ToString("C")</td>
             </tr>
             <tr>
                 <td>Premises Use</td>
                 <td>@Model.PremisesUseCost.ToString("C")</td>
-                <td>@((Model.Booking.Departure - Model.Booking.Arrival).Days)</td>
+                <td>@(Model.Booking.Departure != DateTime.MinValue ? (Model.Booking.Departure - Model.Booking.Arrival).Days : 1)</td>
                 <td>@Model.Booking.Guests</td>
                 <td>@Model.PremisesUseCost.ToString("C")</td>
             </tr>
             <tr>
                 <td>Director's Discount</td>
                 <td>-$</td>
-                <td>@((Model.Booking.Departure - Model.Booking.Arrival).Days)</td>
+                <td>@(Model.Booking.Departure != DateTime.MinValue ? (Model.Booking.Departure - Model.Booking.Arrival).Days : 1)</td>
                 <td>@Model.Booking.Guests</td>
                 <td>@Model.DirectorsDiscount.ToString("C")</td>
             </tr>

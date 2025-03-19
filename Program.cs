@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using DinkToPdf;
+using DinkToPdf.Contracts;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using QueenOfApostlesRenewalCentre.Data;
 using QueenOfApostlesRenewalCentre.Models;
+using QueenOfApostlesRenewalCentre.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +31,11 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddControllersWithViews();
+
+
+
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+builder.Services.AddScoped<PdfService>();
 
 var app = builder.Build();
 

@@ -40,12 +40,15 @@ namespace QueenOfApostlesRenewalCentre.Controllers
 
             // Filter for upcoming and past bookings
             var upcoming = userBookings.Where(b => b.StartDate > DateTime.Now).ToList();
+            var current = userBookings.Where(b => b.StartDate <= DateTime.Now && b.EndDate > DateTime.Now).ToList();
             var past = userBookings.Where(b => b.EndDate < DateTime.Now).ToList();
 
             // Create ViewModel with upcoming and past bookings
             var viewModel = new UserDashboardViewModel {
                 UpcomingReservations = upcoming,
-                PastReservations = past
+                PastReservations = past,
+                CurrentReservations = current
+                
             };
 
             return View(viewModel);

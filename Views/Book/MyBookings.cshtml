@@ -65,7 +65,10 @@
                             <td>
                                 <div class="btn-group">
                                     <a asp-action="Confirmation" asp-route-id="@booking.BookingId" class="btn btn-sm btn-info">
-                                        <i class="bi bi-eye"></i> View
+                                        <i class="bi bi-eye"></i> View Confirmation
+                                    </a>
+                                    <a asp-action="DownloadInvoice" asp-route-bookingId="@booking.BookingId" class="btn btn-sm btn-light">
+                                        <i class="bu bi-eye"></i>Invoice
                                     </a>
                                     @if (booking.Status != "Cancelled" && booking.StartDate > DateTime.Now) {
                                         <a asp-action="Cancel" asp-route-id="@booking.BookingId" class="btn btn-sm btn-danger">

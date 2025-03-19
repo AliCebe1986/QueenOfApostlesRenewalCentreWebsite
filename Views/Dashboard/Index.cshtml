@@ -64,6 +64,44 @@
     <p>No upcoming reservations found.</p>
 }
 
+<h3>Current / Ongoing Reservations</h3>
+@if (Model.CurrentReservations.Any()) {
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Rooms</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Reservation Type</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var booking in Model.CurrentReservations) {
+                <tr>
+                    <td>
+                        @if (booking.Rooms != null && booking.Rooms.Any()) {
+                            <ul class="mb-0">
+                                @foreach (var room in booking.Rooms) {
+                                    <li>@room.Name (Room #@room.RoomNumber)</li>
+                                }
+                            </ul>
+                        } else {
+                            <span class="text-muted">No rooms available</span>
+                        }
+                    </td>
+                    <td>@booking.StartDate.ToString("g")</td>
+                    <td>@booking.EndDate.ToString("g")</td>
+                    <td>@booking.ReservationType</td>
+                    <td>@booking.Status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+} else {
+    <p>No current reservations found.</p>
+}
+
 <h3>Past Reservations</h3>
 @if (Model.PastReservations.Any()) {
     <table class="table table-bordered">
