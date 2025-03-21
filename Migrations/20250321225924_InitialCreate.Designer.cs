@@ -12,8 +12,8 @@ using QueenOfApostlesRenewalCentre.Data;
 namespace QueenOfApostlesRenewalCentre.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250317213641_fix_db")]
-    partial class fix_db
+    [Migration("20250321225924_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

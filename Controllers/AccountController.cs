@@ -125,5 +125,19 @@ namespace QueenOfApostlesRenewalCentre.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
+        // GET: /Account/Profile
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+            return View("~/Areas/Staff/Views/StaffDashboard/Profile.cshtml", user);
+        }
+
+
     }
 }
