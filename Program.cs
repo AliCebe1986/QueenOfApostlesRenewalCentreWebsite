@@ -2,6 +2,8 @@
 using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using QueenOfApostlesRenewalCentre.Data;
 using QueenOfApostlesRenewalCentre.Models;
 using QueenOfApostlesRenewalCentre.Services;
@@ -47,6 +49,13 @@ using (var scope = app.Services.CreateScope())
     {
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        var dbContext = services.GetRequiredService<ApplicationDbContext>();
+
+        // Check if database exists and has migration history table
+        if (!await dbContext.Database.GetService<IRelationalDatabaseCreator>().ExistsAsync()) {
+            // If it doesn't exist, run migration
+            dbContext.Database.Migrate();
+        }
 
         // Roles to create
         string[] roleNames = { "Admin", "Staff", "User" };
