@@ -1,0 +1,152 @@
+﻿@{
+    ViewData["Title"] = "Scrollable Editable PDF Form";
+    var pdfUrl = Url.Content(@Model.ContractURL);
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/5.0.5/signature_pad.umd.min.js"></script>
+
+<h2>Edit the PDF Form</h2>
+
+<!-- Scrollable PDF Viewer -->
+<div id="pdfContainer" style="width: 100%; height: 80vh; overflow-y: auto; border: 1px solid #ccc;">
+    <div id="pdfPages"></div>
+</div>
+
+<!-- Signature Pad -->
+<h3>Sign Here:</h3>
+<canvas id="signaturePad" width="400" height="150" style="border: 1px solid black;"></canvas>
+<button id="clearSignature" class="btn btn-secondary">Clear Signature</button>
+
+<input type="hidden" id="bookingId" value="@Model.booking.BookingId" />
+
+<!-- Navigate to SaveFilledPdf Button -->
+<div class="mt-3">
+    <button id="savePdf" class="btn btn-primary">Proceed to Save PDF</button>
+</div>
+
+<script>
+    var pdfUrl = "@pdfUrl";
+    var pdfDoc = null;
+    var scale = 1.5;
+    var pdfContainer = document.getElementById("pdfPages");
+
+    // Initialize Signature Pad
+    var canvas = document.getElementById("signaturePad");
+    var signaturePad = new SignaturePad(canvas);
+
+    pdfjsLib.getDocument(pdfUrl).promise.then(function (pdf) {
+        pdfDoc = pdf;
+        for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+            renderPage(pageNum);
+        }
+    });
+
+    function renderPage(num) {
+        pdfDoc.getPage(num).then(function (page) {
+            var viewport = page.getViewport({ scale: scale });
+
+            // Create a container for each page
+            var pageContainer = document.createElement("div");
+            pageContainer.style.position = "relative";
+            pageContainer.style.marginBottom = "20px";
+
+            var canvas = document.createElement("canvas");
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            var ctx = canvas.getContext("2d");
+
+            var formOverlay = document.createElement("div");
+            formOverlay.style.position = "absolute";
+            formOverlay.style.top = "0";
+            formOverlay.style.left = "0";
+            formOverlay.style.width = viewport.width + "px";
+            formOverlay.style.height = viewport.height + "px";
+
+            pageContainer.appendChild(canvas);
+            pageContainer.appendChild(formOverlay);
+            pdfContainer.appendChild(pageContainer);
+
+            var renderContext = {
+                canvasContext: ctx,
+                viewport: viewport
+            };
+            page.render(renderContext);
+
+            // Load form fields dynamically
+            page.getAnnotations().then(function (annotations) {
+                annotations.forEach(function (annotation) {
+                    if (annotation.subtype === "Widget") {
+                        if (annotation.fieldType === "Tx") {
+                            // Text input fields
+                            var input = document.createElement("input");
+                            input.type = "text";
+                            input.value = annotation.defaultValue || "";
+                            input.name = annotation.fieldName;
+                            input.style.position = "absolute";
+                            input.style.left = annotation.rect[0] * scale + "px";
+                            input.style.top = (viewport.height - annotation.rect[3] * scale) + "px";
+                            input.style.width = (annotation.rect[2] - annotation.rect[0]) * scale + "px";
+                            input.style.height = (annotation.rect[3] - annotation.rect[1]) * scale + "px";
+                            formOverlay.appendChild(input);
+                        } else if (annotation.fieldType === "Btn" && annotation.checkBox) {
+                            // Checkbox fields (multiple checkboxes allowed)
+                            var checkbox = document.createElement("input");
+                            checkbox.type = "checkbox";
+                            checkbox.name = annotation.fieldName;
+                            checkbox.style.position = "absolute";
+                            checkbox.style.left = annotation.rect[0] * scale + "px";
+                            checkbox.style.top = (viewport.height - annotation.rect[3] * scale) + "px";
+                            checkbox.style.width = "20px";
+                            checkbox.style.height = "20px";
+
+                            formOverlay.appendChild(checkbox);
+                        }
+                    }
+                });
+            });
+        });
+    }
+
+    // Clear Signature Button
+    document.getElementById("clearSignature").addEventListener("click", function () {
+        signaturePad.clear();
+    });
+
+    document.getElementById("savePdf").addEventListener("click", function () {
+        var formData = {};
+
+        // Capture text inputs
+        document.querySelectorAll("#pdfPages input[type='text']").forEach(input => {
+            formData[input.name] = input.value;
+        });
+
+        // Capture checkboxes
+        document.querySelectorAll("#pdfPages input[type='checkbox']").forEach(checkbox => {
+            formData[checkbox.name] = checkbox.checked ? "Yes" : "No";
+        });
+
+        // Capture signature
+        formData["signature"] = signaturePad.isEmpty() ? "" : signaturePad.toDataURL();
+
+        // Include Booking ID
+        formData["bookingId"] = document.getElementById("bookingId").value;
+
+        // Send data to ContractController -> SaveFilledPdf
+        fetch("/Contract/SaveFilledPdf", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect to BookingController -> Confirmation
+                    window.location.href = `/Book/Confirmation/${data.bookingId}`;
+                } else {
+                    alert("Error processing form.");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+    });
+
+</script>

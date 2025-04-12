@@ -34,7 +34,9 @@
             @foreach (var booking in Model.UpcomingReservations) {
                 <tr>
                     <td>
-                        @if (booking.Rooms != null && booking.Rooms.Any()) {
+                        @if (booking.EndDate == DateTime.MinValue) {
+                            <span class="text-muted">N/A</span>
+                        } else if (booking.Rooms != null && booking.Rooms.Any()) {
                             <ul class="mb-0">
                                 @foreach (var room in booking.Rooms) {
                                     <li>@room.Name (Room #@room.RoomNumber)</li>
@@ -45,7 +47,7 @@
                         }
                     </td>
                     <td>@booking.StartDate.ToString("g")</td>
-                    <td>@booking.EndDate.ToString("g")</td>
+                    <td>@(booking.EndDate == DateTime.MinValue ? "N/A" : booking.EndDate.ToString("g"))</td>
                     <td>@booking.ReservationType</td>
                     <td>@booking.Status</td>
                     <td>
@@ -80,7 +82,9 @@
             @foreach (var booking in Model.CurrentReservations) {
                 <tr>
                     <td>
-                        @if (booking.Rooms != null && booking.Rooms.Any()) {
+                        @if (booking.EndDate == DateTime.MinValue) {
+                            <span class="text-muted">N/A</span>
+                        } else if (booking.Rooms != null && booking.Rooms.Any()) {
                             <ul class="mb-0">
                                 @foreach (var room in booking.Rooms) {
                                     <li>@room.Name (Room #@room.RoomNumber)</li>
@@ -91,7 +95,7 @@
                         }
                     </td>
                     <td>@booking.StartDate.ToString("g")</td>
-                    <td>@booking.EndDate.ToString("g")</td>
+                    <td>@(booking.EndDate == DateTime.MinValue ? "N/A" : booking.EndDate.ToString("g"))</td>
                     <td>@booking.ReservationType</td>
                     <td>@booking.Status</td>
                 </tr>
@@ -118,7 +122,9 @@
             @foreach (var booking in Model.PastReservations) {
                 <tr>
                     <td>
-                        @if (booking.Rooms != null && booking.Rooms.Any()) {
+                        @if (booking.EndDate == DateTime.MinValue) {
+                            <span class="text-muted">N/A</span>
+                        } else if (booking.Rooms != null && booking.Rooms.Any()) {
                             <ul class="mb-0">
                                 @foreach (var room in booking.Rooms) {
                                     <li>@room.Name (Room #@room.RoomNumber)</li>
@@ -127,9 +133,10 @@
                         } else {
                             <span class="text-muted">No rooms available</span>
                         }
+
                     </td>
                     <td>@booking.StartDate.ToString("g")</td>
-                    <td>@booking.EndDate.ToString("g")</td>
+                    <td>@(booking.EndDate == DateTime.MinValue ? "N/A" : booking.EndDate.ToString("g"))</td>
                     <td>@booking.ReservationType</td>
                     <td>@booking.Status</td>
                 </tr>

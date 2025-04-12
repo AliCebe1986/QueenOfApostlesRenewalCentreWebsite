@@ -135,7 +135,117 @@ namespace QueenOfApostlesRenewalCentre.Controllers
             {
                 return RedirectToAction("Login");
             }
-            return View("~/Areas/Staff/Views/StaffDashboard/Profile.cshtml", user);
+
+            var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
+            var isStaff = await _userManager.IsInRoleAsync(user, "Staff");
+
+            if ( isAdmin || isStaff)
+            {
+                return View("~/Areas/Staff/Views/StaffDashboard/Profile.cshtml", user);
+            }
+
+            return View("Profile", user);
+            
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> EditProfile() {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) {
+                return RedirectToAction("Login");
+            }
+
+
+            var model = new UserProfileViewModel {
+                Name = user.Name,
+                Surname = user.Surname,
+                Email = user.Email,
+
+            };
+            return View(model);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditProfile(UserProfileViewModel model) {
+
+            Console.WriteLine(model.Name);
+            Console.WriteLine(model.Surname);
+            Console.WriteLine(model.Email);
+
+
+            if (!ModelState.IsValid) {
+                return View(model);
+            }
+
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) { return RedirectToAction("Login"); }
+
+            user.Name = model.Name;
+            user.Surname = model.Surname;
+
+            if (!string.Equals(user.Email, model.Email, StringComparison.OrdinalIgnoreCase)) {
+                var emailExists = await _userManager.FindByEmailAsync(model.Email);
+                if (emailExists != null && emailExists.Id != user.Id) {
+                    ModelState.AddModelError("Email", "This email is already in use by another account.");
+                    return View(model);
+                }
+
+                user.Email = model.Email;
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded) {
+                TempData["SuccessMessage"] = "Profile updated successfully.";
+                return RedirectToAction("Profile");
+            }
+
+            foreach (var error in result.Errors) {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
+
+        }
+
+
+        [HttpGet]
+        public IActionResult ChangePassword() {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model) {
+
+
+            if(!ModelState.IsValid) {
+                return View(model);
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) {
+                return RedirectToAction("Login");
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+
+            if (result.Succeeded) {
+                await _signInManager.RefreshSignInAsync(user);
+                TempData["SuccessMessage"] = "Your password has been changed successfully.";
+                return RedirectToAction("Profile");
+            }
+
+            foreach (var error in result.Errors) {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
+
         }
 
 

@@ -47,15 +47,14 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
-        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
         var dbContext = services.GetRequiredService<ApplicationDbContext>();
 
-        // Check if database exists and has migration history table
         if (!await dbContext.Database.GetService<IRelationalDatabaseCreator>().ExistsAsync()) {
-            // If it doesn't exist, run migration
+          
             dbContext.Database.Migrate();
         }
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
         // Roles to create
         string[] roleNames = { "Admin", "Staff", "User" };

@@ -1,0 +1,36 @@
+﻿@model QueenOfApostlesRenewalCentre.Models.ApplicationUser
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<h2 class="mb-4">My Profile</h2>
+
+@if (TempData["SuccessMessage"] != null) {
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null) {
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Name</dt>
+            <dd class="col-sm-9">@Model.Name</dd>
+
+            <dt class="col-sm-3">Surname</dt>
+            <dd class="col-sm-9">@Model.Surname</dd>
+
+            <dt class="col-sm-3">Email</dt>
+            <dd class="col-sm-9">@Model.Email</dd>
+
+            <dt class="col-sm-3">Account Created</dt>
+            <dd class="col-sm-9">@Model.CreatedDate.ToLocalTime().ToString("f")</dd>
+        </dl>
+    </div>
+</div>
+
+<div class="d-flex gap-2">
+    <a asp-action="EditProfile" class="btn btn-warning">Edit Profile</a>
+    <a asp-action="ChangePassword" class="btn btn-secondary">Change Password</a>
+</div>

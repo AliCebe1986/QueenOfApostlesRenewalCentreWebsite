@@ -7,6 +7,8 @@ using QueenOfApostlesRenewalCentre.Data;
 using QueenOfApostlesRenewalCentre.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using iText.Kernel.Pdf;
+using iText.Forms;
 
 
 namespace QueenOfApostlesRenewalCentre.Services {
@@ -98,6 +100,32 @@ namespace QueenOfApostlesRenewalCentre.Services {
             };
             return _pdfConverter.Convert(pdfDocument);
         }
+
+
+
+        public Dictionary<string, string> ExtractFormFields(string pdfPath) {
+
+
+            var formFields = new Dictionary<string, string>();
+
+            using (var pdfReader = new PdfReader(pdfPath))
+            using (var pdfDocument = new PdfDocument(pdfReader)) {
+
+                var form = PdfAcroForm.GetAcroForm(pdfDocument, false);
+                if (form != null) {
+                    foreach (var field in form.GetAllFormFields()) {
+                        formFields.Add(field.Key, field.Value.GetValueAsString());
+                    }
+                }
+
+
+            }
+            return formFields;
+
+        }
+
+
+
     }
 }
 
