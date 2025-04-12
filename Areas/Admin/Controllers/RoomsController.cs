@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QueenOfApostlesRenewalCentre.Areas.Admin.Models;
 using QueenOfApostlesRenewalCentre.Data;
 using QueenOfApostlesRenewalCentre.Models;
 using System.Linq;
@@ -22,8 +23,26 @@ namespace QueenOfApostlesRenewalCentre.Areas.Admin.Controllers
         // GET: Admin/Rooms
         public async Task<IActionResult> Index()
         {
+
             var rooms = await _context.Rooms.ToListAsync();
-            return View(rooms);
+            var bookings = await _context.Bookings.ToListAsync();
+            var today = DateTime.Today;
+            var model = rooms.Select(room =>
+            {
+                bool isReserved = bookings.Any(b =>
+                    b.RoomIds.Contains(room.RoomId) &&
+                    (
+                        (b.StartDate.Date <= today && b.EndDate.Date >= today) ||
+                        (b.EndDate == DateTime.MinValue && b.StartDate.Date == today)
+                    ));
+
+                return new RoomsViewModel {
+                    room = room,
+                    isCurrentlyReserved = isReserved
+                };
+            }).ToList();
+
+            return View(model);
         }
 
         // GET: Admin/Rooms/Create

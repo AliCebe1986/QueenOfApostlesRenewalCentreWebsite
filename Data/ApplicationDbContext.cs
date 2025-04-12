@@ -21,6 +21,8 @@ namespace QueenOfApostlesRenewalCentre.Data
         public DbSet<RoomCleaning> RoomCleanings { get; set; }
         public DbSet<News> News { get; set; }
 
+        public DbSet<Contract> Contracts { get; set; }
+
         public DbSet<ConferenceRoom> ConferenceRooms { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

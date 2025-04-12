@@ -1,4 +1,4 @@
-﻿@model IEnumerable<QueenOfApostlesRenewalCentre.Models.Room>
+﻿@model IEnumerable<QueenOfApostlesRenewalCentre.Areas.Admin.Models.RoomsViewModel>
 
 @{
     ViewData["Title"] = "Manage Rooms";
@@ -12,21 +12,21 @@
     </div>
 
     <div class="row">
-        @foreach (var room in Model)
+        @foreach (var roomModel in Model)
         {
             // Set card border color: red if reserved, green if available
-            var cardColor = room.IsReserved ? "border-danger" : "border-success";
-            var headerColor = room.IsReserved ? "bg-danger" : "bg-success";
+            var cardColor = roomModel.isCurrentlyReserved ? "border-danger" : "border-success";
+            var headerColor = roomModel.isCurrentlyReserved ? "bg-danger" : "bg-success";
             <div class="col-md-3 mb-4">
-                <div class="card @cardColor room-card" data-room-id="@room.RoomId" style="cursor: pointer;">
+                <div class="card @cardColor room-card" data-room-id="@roomModel.room.RoomId" style="cursor: pointer;">
                     <div class="card-header text-white @headerColor">
-                        @room.Name
+                        @roomModel.room.Name
                     </div>
                     <div class="card-body">
                         <p class="card-text">
-                            Capacity: @room.Capacity <br />
-                            Type: @room.Type <br />
-                            Shower: @(room.WithShower ? "With Shower" : "Without Shower")
+                            Capacity: @roomModel.room.Capacity <br />
+                            Type: @roomModel.room.Type <br />
+                            Shower: @(roomModel.room.WithShower ? "With Shower" : "Without Shower")
                         </p>
                     </div>
                 </div>
@@ -52,7 +52,43 @@
             <div class="modal-footer">
                 <a id="editRoomLink" href="#" class="btn btn-warning">Edit</a>
                 <a id="deleteRoomLink" href="#" class="btn btn-danger">Delete</a>
+                <a id="viewScheduleBtn" href="#" class="btn btn-info">View Weekly Schedule</a>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Schedule for Rooms Modal -->
+<div class="modal fade" id="weeklyScheduleModal" tabindex="-1" aria-labelledby="weeklyScheduleLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" style="margin-top: 150px">
+            <div class="modal-header">
+                <h5 class="modal-title" id="weeklyScheduleLabel">Weekly Schedule</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="roomScheduleContainer" class="mt-3 d-none">
+                    <h5>Weekly Schedule</h5>
+                    <table class="table table-bordered text-center" id="roomScheduleTable">
+                        <thead>
+                            <tr>
+                                <th>Monday</th>
+                                <th>Tuesday</th>
+                                <th>Wednesday</th>
+                                <th>Thursday</th>
+                                <th>Friday</th>
+                                <th>Saturday</th>
+                                <th>Sunday</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="scheduleRow">
+                                
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -60,31 +96,61 @@
 
 @section Scripts {
     <script>
+        let selectedRoomId = null;
+
         // Attach click event to each room card
         document.querySelectorAll('.room-card').forEach(function (card) {
             card.addEventListener('click', function () {
-                var roomId = this.getAttribute('data-room-id');
+                selectedRoomId = this.getAttribute('data-room-id');
+                const roomName = this.querySelector('.card-header').innerText;
+                const cardText = this.querySelector('.card-text').innerText;
+                const status = this.classList.contains("border-danger") ? "Reserved" : "Available";
 
-                // For demonstration, populate modal with data from the card.
-                // In production, an AJAX call could be used to fetch detailed info.
-                var roomName = this.querySelector('.card-header').innerText;
-                var cardText = this.querySelector('.card-text').innerText;
-                var status = this.classList.contains("border-danger") ? "Reserved" : "Available";
-                var content = `
+                const content = `
                             <p><strong>Name:</strong> ${roomName}</p>
                             <p>${cardText.replace(/\n/g, "<br />")}</p>
                             <p><strong>Status:</strong> ${status}</p>
                         `;
                 document.getElementById('roomDetailsContent').innerHTML = content;
 
-                // Set edit and delete links
-                document.getElementById('editRoomLink').setAttribute('href', `/Admin/Rooms/Edit/${roomId}`);
-                document.getElementById('deleteRoomLink').setAttribute('href', `/Admin/Rooms/Delete/${roomId}`);
+                document.getElementById('editRoomLink').href = `/Admin/Rooms/Edit/${selectedRoomId}`;
+                document.getElementById('deleteRoomLink').href = `/Admin/Rooms/Delete/${selectedRoomId}`;
 
-                // Show the modal
-                var roomModal = new bootstrap.Modal(document.getElementById('roomDetailsModal'));
+                const roomModal = new bootstrap.Modal(document.getElementById('roomDetailsModal'));
                 roomModal.show();
             });
         });
+
+        // View Weekly Schedule Button (only one exists, bind once)
+        document.getElementById('viewScheduleBtn').addEventListener('click', function () {
+            if (!selectedRoomId) return;
+
+            const today = new Date();
+            const day = today.getDay();
+            const diff = (day === 0 ? -6 : 1) - day;
+            const monday = new Date(today);
+            monday.setDate(today.getDate() + diff);
+            const weekStart = monday.toISOString().split('T')[0];
+
+            fetch(`/Schedule/GetRoomSchedule?roomId=${selectedRoomId}&weekStartDate=${weekStart}`)
+                .then(res => res.json())
+                .then(data => {
+                    const scheduleRow = document.getElementById('scheduleRow');
+                    scheduleRow.innerHTML = "";
+
+                    data.forEach(day => {
+                        const td = document.createElement('td');
+                        td.className = day.isBooked ? 'table-danger' : 'table-success';
+                        td.innerHTML = `<strong>${day.isBooked ? "Booked" : "Available"}</strong><br><small>${day.date}</small>`;
+                        scheduleRow.appendChild(td);
+                    });
+
+                    document.getElementById('roomScheduleContainer').classList.remove('d-none');
+                    const modal = new bootstrap.Modal(document.getElementById('weeklyScheduleModal'));
+                    modal.show();
+                });
+        });
     </script>
 }
+
+

@@ -172,7 +172,7 @@ namespace QueenOfApostlesRenewalCentre.Controllers {
 
             await CreateInvoiceForBooking(model, booking.BookingId);
 
-            return RedirectToAction("Confirmation", new { id = booking.BookingId });
+            return RedirectToAction("Index", "Contract", new { id = booking.BookingId });
         }
 
 
